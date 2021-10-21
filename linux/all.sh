@@ -79,6 +79,13 @@ git merge origin/分支名
 gsr
 #git-svn 上传
 gsb
+#代码比对
+gd
+git difftool -t nvimdiff
+#commit 撤销操作
+git reset --mixed HEAD~1 // 不删除空间改动代码，撤销commit和gaa，同时可以回退多个旧commit
+git reset --soft HEAD~1  // 不删除空间改动代码，撤销commit，不撤销gaa
+git reset --hard HEAD~1  // 删除空间改动代码，撤销commit，撤销gaa
 #查看状态
 gst
 gss
