@@ -13,3 +13,6 @@ unsigned long hash(unsigned char *str) {
     hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
   return hash;
 }
+
+#====== memory leak check ======
+valgrind --leak-check=full ELF

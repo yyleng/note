@@ -93,3 +93,10 @@ gsb
 #查看代码是谁修改的
 在vim 中,:Git blame
 ```
+
+#====== dnf 加速下载
+```
+/etc/dnf/dnf.conf
+[main]
+proxy=http://127.0.0.1:7890
+```
