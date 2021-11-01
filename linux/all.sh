@@ -100,3 +100,42 @@ gsb
 [main]
 proxy=http://127.0.0.1:7890
 ```
+
+#====== weather reporter
+```
+curl wttr.in
+```
+
+#======= tranlate software
+```
+yum install goldendict
+whereis goldendict
+#config directory
+~/.goldendict
+#goldendict is hard link
+```
+
+#====== lockfile
+```
+#加密
+lockfile a.c b.c
+#解密
+lockfile a.c.bfe
+```
+
+#====== nvim 
+```sh
+sudo dnf install -y neovim python3-neovim
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+:PluginInstall
+```
+
+#====== fonts
+```sh
+https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/DroidSansMono.zip
+mkdir ~/.local/share/fonts
+auto-extract DroidSansMono.zip
+mv ~/Downloads/Droid\ Sans\ Mono\ Nerd\ Font\ Complete* ~/.local/share/fonts
+rm -fr DroidSansMono.zip
+```
