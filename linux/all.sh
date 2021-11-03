@@ -139,3 +139,32 @@ auto-extract DroidSansMono.zip
 mv ~/Downloads/Droid\ Sans\ Mono\ Nerd\ Font\ Complete* ~/.local/share/fonts
 rm -fr DroidSansMono.zip
 ```
+
+#====== supervisorctl supervisord
+```sh
+# control process group
+#offical site 
+http://supervisord.org/
+```
+
+#====== 密码破解
+```sh 
+# -l username 
+# -P password dict 
+# -t thread 
+hydra -l root -P /root/pass.txt -t 16 192.168.110.7 ssh
+```
+
+#====== grpc_cli
+```sh
+#show service 
+grpc_cli ls localhost:50051
+#show service details
+grpc_cli ls localhost:50051 helloworld.Greeter -l
+#show methods
+grpc_cli ls localhost:50051 helloworld.Greeter.SayHello -l
+#show message type
+grpc_cli type localhost:50051 helloworld.HelloRequest
+#call a remote method 
+grpc_cli call localhost:50051 SayHello "name: 'gRPC CLI'"
+```

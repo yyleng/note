@@ -525,3 +525,9 @@ ag <string> <path>
 yum localinstall -y teamviewer_15.21.4.x86_64.rpm
 ```
 
+## nmap 
+```sh 
+#端口扫描
+nmap -A -v -p1-10000 192.168.110.92 
+```
+
