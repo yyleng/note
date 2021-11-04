@@ -531,3 +531,14 @@ yum localinstall -y teamviewer_15.21.4.x86_64.rpm
 nmap -A -v -p1-10000 192.168.110.92 
 ```
 
+## iptables
+```sh
+#查看iptables 内容
+iptables -L -n --line-number
+#打开指定端口
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT #input
+iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT#ouput
+#关闭指定端口
+iptables -D INPUT line-number
+iptables -D OUTPUT line-number
+```

