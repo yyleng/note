@@ -542,3 +542,8 @@ iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT#ouput
 iptables -D INPUT line-number
 iptables -D OUTPUT line-number
 ```
+
+## awk
+```sh
+
+```
