@@ -515,7 +515,12 @@ apg
 ## ag
 ```sh
 #代码查找，比grep快
-ag <string> <path>
+ag <string> [paht]
+```
+## rg
+```sh
+#代码查找，比grep快
+rg <string> [path]
 ```
 
 # 软件安装

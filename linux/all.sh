@@ -262,4 +262,13 @@ export EDITOR=nvim
 source ~/.zshrc
 ```
 
+#===== tty =====
+```sh
+# into tty3 tty4 tty5 tty6
+ctrl-alt-[f3|f4|f5|f6]
+# recover 
+ctrl-alt-[f1|f2]
+```
+
+
 
