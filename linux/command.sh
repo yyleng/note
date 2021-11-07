@@ -552,3 +552,52 @@ iptables -D OUTPUT line-number
 ```sh
 
 ```
+
+## python 
+```sh 
+#share file through web
+python3 -m http.server 8080
+```
+
+## z 
+```sh 
+#config in .zshrc
+# autojump any directory
+z <anydirectory>
+```
+
+## http 
+```sh 
+#automatic install
+#replace wget curl ... 
+http --download URL --output file 
+... 
+```
+
+## pbcopy pbpaste
+```sh 
+#alias in .zshrc 
+#copy or paste in clipboard 
+pbcopy 
+pbpaste 
+```
+
+## bandwhich 
+```sh 
+#sudo dnf copr enable atim/bandwhich -y && sudo dnf install bandwhich
+#watch process bandwhich 
+bandwhich 
+```
+
+## grep 
+```sh 
+# down tar.gz https://github.com/pemistahl/grex
+# generate regex through multi examples 
+grex a b c
+```
+## procs 
+```sh 
+# automatic install 
+# ps ++ 
+procs 
+```

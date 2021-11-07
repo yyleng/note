@@ -270,5 +270,10 @@ ctrl-alt-[f3|f4|f5|f6]
 ctrl-alt-[f1|f2]
 ```
 
-
+#===== write read-only file ====
+```sh 
+#using !!
+w!!
+wa!!
+```
 
