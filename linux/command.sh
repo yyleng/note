@@ -23,6 +23,8 @@ df --help
 mount
 #挂载一个设备到指定目录，设备名到/dev目录下找（或使用lsblk查看），目录随意指定
 mount <设备名> <目录>
+# bind mount / redirect inode,被挂载覆盖的目录的数据不会丢失
+mount --bind directoryA directoryB
 #查看更过使用方法
 mount --help
 ```
@@ -546,6 +548,11 @@ iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT#ouput
 #关闭指定端口
 iptables -D INPUT line-number
 iptables -D OUTPUT line-number
+#删除所有链
+iptables -F 
+iptables -X
+#查看
+iptables -S
 ```
 
 ## awk
@@ -600,4 +607,40 @@ grex a b c
 # automatic install 
 # ps ++ 
 procs 
+```
+
+## ctop
+```sh 
+# sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64  -O ~/bin/ctop 
+# monitor container 
+# managed by app 
+app ctop 
+```
+
+## nslookup
+```sh 
+# automatic install 
+# tracking domain name and get ip 
+nslookup baidu.com 
+```
+
+## evince 
+```sh
+# automatic install 
+# document viewer 
+evince *.pdf 
+```
+
+## nenstat
+```sh 
+# automatic install 
+# show all listening port bind which address
+netstat -tnlp
+```
+
+## systemctl 
+```sh 
+# automatic install 
+# check graphical network manager 
+systemctl status NetworkManager
 ```

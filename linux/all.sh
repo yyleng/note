@@ -131,6 +131,16 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 :PluginInstall
 ```
 
+#====== nodejs
+curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+yum clean all 
+yum makecache 
+yum install -y nodejs
+
+#====== fzf 
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
 #====== fonts
 ```sh
 https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/DroidSansMono.zip
@@ -271,9 +281,30 @@ ctrl-alt-[f1|f2]
 ```
 
 #===== write read-only file ====
-```sh 
 #using !!
 w!!
 wa!!
-```
 
+#===== docker account ===== 
+vim ~/.docker/config.json
+{
+	"auths": {
+		"ip[:port]": {
+			"auth": "base64加密"
+		}
+	}
+}
+
+#===== linux namespace/cgroup =====
+cd /sys/fs/cgroup
+cd /proc/57780/ns
+
+#===== systemctl auto-start =====
+vim /usr/lib/systemd/system/clash.service
+systemctl enable clash.service
+
+#===== recover kitty keyboard =====
+kitty +kitten ssh root@192.168.120.192
+
+#===== curl ignore cert =====
+curl -k
