@@ -308,3 +308,9 @@ kitty +kitten ssh root@192.168.120.192
 
 #===== curl ignore cert =====
 curl -k
+
+#===== cert证书制作 =====
+https://github.com/yeasy/docker_practice/blob/master/repository/registry_auth.md
+
+#===== node control k8s =====
+scp master:~/.kube/config.yaml ~/.kube
