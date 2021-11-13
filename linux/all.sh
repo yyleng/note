@@ -253,7 +253,7 @@ int main() {
 ## attacker 
 ```sh
 # get pwn way 
-pt-get update
+apt-get update
 apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade pwntools
@@ -314,3 +314,10 @@ https://github.com/yeasy/docker_practice/blob/master/repository/registry_auth.md
 
 #===== node control k8s =====
 scp master:~/.kube/config.yaml ~/.kube
+
+#===== screen vedio record =====
+gsettings set org.gnome.settings-daemon.plugins.media-keys max-screencast-length 0
+alt-ctrl-shift-r
+
+#===== change default shell =====
+chsh -s /bin/zsh

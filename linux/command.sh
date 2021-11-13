@@ -502,7 +502,7 @@ gtop
 ## dstat
  
 #显示cpu/memory/等信息
-dstat
+dstat -cdlmnpsy
 #更多用法
 tldr dstat
  
