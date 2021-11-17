@@ -321,3 +321,7 @@ alt-ctrl-shift-r
 
 #===== change default shell =====
 chsh -s /bin/zsh
+
+#===== get language(locale) =====
+locale 
+localectl status
