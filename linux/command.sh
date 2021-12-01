@@ -544,12 +544,13 @@ nmap -A -v -p1-10000 192.168.110.92
 iptables -L -n --line-number
 #打开指定端口
 iptables -A INPUT -p tcp --dport 22 -j ACCEPT #input
-iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT#ouput
+iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT #ouput
 #关闭指定端口
 iptables -D INPUT line-number
 iptables -D OUTPUT line-number
 #删除所有链
 iptables -F 
+iptables -t nat -F
 iptables -X
 #查看
 iptables -S
@@ -668,4 +669,29 @@ kubectl rollout undo deployment/deployment-nginx [--to-revision=2]
 # show rolling update history, for using this,must use argument with --record when applying resource
 kubectl rollout history deployment/deployment-nginx [--revision=2]
 
+#-----------------------------------定时任务
+## crontab
+# show crond tasks
+crontab -l 
+# edit crond task 
+crontab -e 
+# more 
+tldr crontab
 
+#----------------------------------查看系统相关信息
+hostnamectl #会有kernel 版本
+
+#----------------------------------小动物(funny)
+oneko
+
+#----------------------------------火车
+sl
+
+#----------------------------------代码雨
+cmatrix
+
+#---------------------------------名人名言
+fortune
+
+#--------------------------------小奶牛
+cowsay

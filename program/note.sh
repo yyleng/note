@@ -43,3 +43,8 @@ cd examples/cpp/helloworld
 make greeter_server
 make greeter_client
 ```
+
+#===== *.a *.so =====
+ar -crv libitemsaico.a items.o
+g++ -fpic 
+g++ --shared

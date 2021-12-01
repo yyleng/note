@@ -49,6 +49,9 @@ END
 
 #====== git快捷命令 ======
 ```sh
+#显示所有分支
+gb -a
+#提交
 gaa
 gcam
 ggpush
@@ -90,6 +93,15 @@ git reset --hard HEAD~1  // 删除空间改动代码，撤销commit，撤销gaa
 gst
 gss
 gsb
+#拉取远程分支
+git checkout -b feature-branch origin/feature-branch    #检出远程的feature-branch分支到本地
+#本地传建分支并推到远程
+git checkout -b feature-branch    #创建并切换到分支feature-branch  
+git push origin feature-branch:feature-branch    #推送本地的feature-branch(冒号前面的)分支到远程origin的feature-branch(冒号后面的)分支(没有会自动创建)
+#删除远程分支
+gp origin --delete feature-branch
+#删除本地分支
+gb -D sub-branch
 #查看代码是谁修改的
 在vim 中,:Git blame
 ```
@@ -140,6 +152,11 @@ yum install -y nodejs
 #====== fzf 
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
+
+#====== zsh plugin 
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 #====== fonts
 ```sh
@@ -325,3 +342,32 @@ chsh -s /bin/zsh
 #===== get language(locale) =====
 locale 
 localectl status
+
+#===== get dynamic lib =====
+pkg-config <tab> --libs
+
+#===== open anything by using default browser =====
+xdg-open <url>
+
+#===== glibc error != =====
+# 解决办法
+LD_PRELOAD="/lib64/libc-2.18.so" ln -s /lib64/libc-2.18.so /lib64/libc.so.6
+
+#==== pkg official site ====
+https://pkgs.org/
+
+#==== ssh debug ====
+# git use ssh 
+export GIT_SSH_COMMAND="ssh -vvv"
+
+#==== ssh recover ssh-rsa =====
+~/.ssh/config
+Host *
+    PubkeyAcceptedKeyTypes=+ssh-rsa
+
+#===== private git repo ====
+<project>/.git/config
+[remote "origin"]
+	url = ssh://git@gitlab.moresec-abc.com:10022/root/dockerdemo.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+
