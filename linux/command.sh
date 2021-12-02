@@ -315,6 +315,10 @@ useradd --help
 passwd
 #修改其他用户的密码，需要root执行
 passwd <用户名>
+
+            ###### gpasswd
+            #修改组密码
+            gpasswd
  
 
 ## usermod
@@ -350,6 +354,10 @@ groupdel [选项] 用户组名
 ##如果用户组下有其他用户是无法删除的
 #有关选项的更多用法
 groupdel --help
+
+            ###### groups
+            #显示当前shell所属的各组信息
+            groups
  
 
 ## su
@@ -555,6 +563,20 @@ iptables -X
 #查看
 iptables -S
  
+###### kernel
+# 查看内核模块
+lsmod 
+# 查看内核模块信息
+modinfo
+# 安装内核模块
+insmod *.ko
+# 加载内核模块
+modprobe ...
+
+###### NIC
+# 开启网卡GRO，关闭网卡LRO
+ethtool -k enp2s0 | grep offload
+ethtool -K enp2s0 gro on
 
 ## awk
  
