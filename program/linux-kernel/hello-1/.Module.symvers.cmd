@@ -1,0 +1,1 @@
+cmd_/home/aico/github/note/program/linux-kernel/hello-1/Module.symvers := sed 's/\.ko$$/\.o/' /home/aico/github/note/program/linux-kernel/hello-1/modules.order | scripts/mod/modpost    -o /home/aico/github/note/program/linux-kernel/hello-1/Module.symvers -e -i Module.symvers   -T -

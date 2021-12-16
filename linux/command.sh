@@ -564,14 +564,18 @@ iptables -X
 iptables -S
  
 ###### kernel
+# all
+kmod
 # 查看内核模块
 lsmod 
 # 查看内核模块信息
 modinfo
 # 安装内核模块
 insmod *.ko
+# 删除内核模块
+rmmod *
 # 加载内核模块
-modprobe ...
+# modprobe ...
 
 ###### NIC
 # 开启网卡GRO，关闭网卡LRO
@@ -717,3 +721,9 @@ fortune
 
 #--------------------------------小奶牛
 cowsay
+
+#--------------------------------SHA 加密
+shasum
+
+#--------------------------------将json 格式话输出在终端上
+jq

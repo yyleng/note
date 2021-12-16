@@ -1,0 +1,1 @@
+cmd_/home/aico/github/note/program/linux-kernel/hello-1/hello-4.ko := ld -r -m elf_x86_64 --build-id=sha1  -T scripts/module.lds -o /home/aico/github/note/program/linux-kernel/hello-1/hello-4.ko /home/aico/github/note/program/linux-kernel/hello-1/hello-4.o /home/aico/github/note/program/linux-kernel/hello-1/hello-4.mod.o;  true

@@ -53,3 +53,6 @@ sysctl net.ipv4.ip_forward
 /proc/sys/kernel/osrelease
 /proc/sys/kernel/version
 /proc/version
+
+# 内核加载了的模块
+/proc/modules

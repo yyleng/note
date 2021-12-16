@@ -85,10 +85,15 @@ gsb
 #代码比对
 gd
 git difftool -t nvimdiff
+#查看分支提交记录
+git reflog
+#
 #commit 撤销操作
 git reset --mixed HEAD~1 // 不删除空间改动代码，撤销commit和gaa，同时可以回退多个旧commit
 git reset --soft HEAD~1  // 不删除空间改动代码，撤销commit，不撤销gaa
 git reset --hard HEAD~1  // 删除空间改动代码，撤销commit，撤销gaa
+git reset --hard 345613  //硬切到指定分支
+git reset --sofy 345613  //软切到指定分支
 #查看状态
 gst
 gss
@@ -102,8 +107,15 @@ git push origin feature-branch:feature-branch    #推送本地的feature-branch(
 gp origin --delete feature-branch
 #删除本地分支
 gb -D sub-branch
+#删除变基操作
+git rebase --abort
 #查看代码是谁修改的
 在vim 中,:Git blame
+在vim 中,:G
+在vim 中,:Gvd
+[c
+]c
+dp
 ```
 
 #====== dnf 加速下载
@@ -371,3 +383,5 @@ Host *
 	url = ssh://git@gitlab.moresec-abc.com:10022/root/dockerdemo.git
 	fetch = +refs/heads/*:refs/remotes/origin/*
 
+#===== docker limit ====
+podman pull <imagename>

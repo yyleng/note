@@ -1,5 +1,90 @@
+Vim
+https://yianwillis.github.io/vimcdoc/doc/help.html
+https://github.com/nanotee/nvim-lua-guide
+https://github.com/neoclide/coc.nvim
+https://github.com/wsdjeg/vim-galore-zh_cn
+https://github.com/rhysd/git-messenger.vim
+https://github.com/rafi/vim-config
+https://github.com/amix/vimrc
+https://github.com/josa42/coc-go
+https://github.com/cweill/gotests
+https://github.com/fatih/vim-go
+https://github.com/rockerBOO/awesome-neovim
+https://github.com/NvChad/NvChad
+https://github.com/gelguy/wilder.nvim
+https://github.com/github/copilot.vim
+
+
+
+
+------ nvim plugin -------
+Plug 'nvim-lua/popup.nvim' // 忽略
+Plug 'nvim-lua/plenary.nvim' // 忽略
+Plug 'neoclide/coc.nvim', {'branch': 'release'} // lsp补全
+Plug 'fatih/vim-go'                             // go工具 
+Plug 'github/copilot.vim'                       // ai补全
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} // 高亮
+Plug 'morhetz/gruvbox'                            // 高亮
+Plug 'sheerun/vim-polyglot'                        // 高亮
+Plug 'kyazdani42/nvim-web-devicons'                 // 高亮图标
+Plug 'akinsho/bufferline.nvim'                       // 最上面标签栏, ;number 选择标签
+Plug 'famiu/feline.nvim'                          // 最下面状态栏
+Plug 'nvim-telescope/telescope.nvim'            // 搜索, ;ff ;fc ;fg ;fm
+Plug 'scrooloose/nerdcommenter'       // 注释 ctrl-alt-/
+Plug 'windwp/nvim-autopairs'         // 自动括号
+Plug 'tpope/vim-surround'             // 添加括号
+Plug 'tpope/vim-repeat'               // 与上面的配对
+
+#___________________________________________________
+Plug 'tpope/vim-abolish'#修改变量形式
+# normal mode
+### example AbcDef
+crc # to abcDef
+crU # to ABC_DEF 
+cr[s|_] # to abc_def
+crm # to AbcDef
+
+cr. # to abc.def
+cr- # to abc-def
+cr<space> # to abc def
+crt # to Abc Def
+#____________________________________________________
+Plug 'chaoren/vim-wordmotion'#大小写移动
+# normal mode
+alt+e # to next
+alt+b # to before
+#____________________________________________________
+Plug 'terryma/vim-expand-region'#v V 框选
+v # to expand
+V # to shrink
+vip # code segement
+#____________________________________________________
+Plug 'AndrewRadev/splitjoin.vim'#自动换行
+gS # oneline to multiline
+gJ # multiline to oneline
+#____________________________________________________
+Plug 'justinmk/vim-sneak'     // 搜索
+?????????????????????????????????
+#____________________________________________________
+Plug 'junegunn/vim-easy-align'#对齐
+ga <rule>
+### <rule> is [num|*|**]< =|<space>|:|.|,|&|#|">
+#____________________________________________________
+Plug 'tpope/vim-fugitive' // git
+?????????????????????????????????
+#____________________________________________________
+Plug 'voldikss/vim-floaterm'#显示终端
+F7
+F8
+F9
+F12
+#____________________________________________________
+Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }#vim命令行
+:
+#____________________________________________________
+
 ------ all ------
-CTRL-c              返回 normal 模式
+CTRL-[              返回 normal 模式
 CTRL-q              缩小方法屏幕
 ------ normal ------
 #
@@ -123,7 +208,7 @@ dG                 删除到文件尾
 `
 #======标记
 `
-v                   开始标记
+v...                开始标记
 vH                  选中当前位置到行首(第一个非空字符)
 vL                  选中当前位置到行尾
 viw                 选中当前光标处的单词
