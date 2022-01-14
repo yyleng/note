@@ -73,7 +73,7 @@ git remote add origin ssh://git@192.168.30.140:2222/ksp/ksp_web.git
 #移除远程仓库
 git remote remove origin
 #切换到某一个分支
-gsw 分支名
+gsw -c 分支名 # -c 创建
 #获取远程所有分支
 gfa
 #合并分支
@@ -147,28 +147,11 @@ lockfile a.c b.c
 lockfile a.c.bfe
 ```
 
-#====== nvim 
-```sh
-sudo dnf install -y neovim python3-neovim
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-:PluginInstall
-```
-
 #====== nodejs
 curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
 yum clean all 
 yum makecache 
 yum install -y nodejs
-
-#====== fzf 
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
-
-#====== zsh plugin 
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 #====== fonts
 ```sh

@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:4.4
+    restart: always
+    network_mode: bridge
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: aiconas#super
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/:/data/db
+    ports:
+      - "27017:27017"

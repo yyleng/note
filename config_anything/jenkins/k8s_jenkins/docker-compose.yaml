@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  jenkins:
+    build: ./jenkins_use 
+    container_name: jenkins 
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /home/opt/jenkins_mount:/var/jenkins_home
+      - /run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker 
+      - /usr/bin/make:/usr/bin/make
+      - /home/opt/jenkins_use/gitconfig:/root/.gitconfig
+      - /home/opt/jenkins_use/.ssh/:/root/.ssh/
+      - /home/opt/jenkins_use/svnconfig:/usr/local/svnconfig
+      - /usr/local/go:/usr/local/go
+      - /usr/bin/go:/usr/bin/go
+      - /root/go:/root/go
+      - /home/opt/jenkins_use/.docker/:/root/.docker/
+      - /usr/local/bin/kubectl:/usr/local/bin/kubectl
+      - /home/opt/config:/root/.kube/config
+    ports:
+      - "10240:8080"
+      - "50000:50000"
+    extra_hosts:
+      - "updates.jenkins.io:127.0.0.1" 
+      - "dockerdev.moresec.cn:192.168.30.140"
+      - "git.moresec.cn:192.168.199.197"
+      - "kuber4s.api:192.168.120.17"
+networks:
+  gitea:
+    external: false 

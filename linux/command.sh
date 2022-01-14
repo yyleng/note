@@ -532,6 +532,8 @@ ag <string> [paht]
 #代码查找，比grep快
 rg <string> [path]
  
+#删除指定网卡
+ip link delete abc
 
 # 软件安装
 ## yum
@@ -558,7 +560,7 @@ iptables -D INPUT line-number
 iptables -D OUTPUT line-number
 #删除所有链
 iptables -F 
-iptables -t nat -F
+iptables -t nat -X
 iptables -X
 #查看
 iptables -S
@@ -707,6 +709,9 @@ tldr crontab
 #----------------------------------查看系统相关信息
 hostnamectl #会有kernel 版本
 
+#----------------------------------时间同步
+timedatectl set-ntp true
+
 #----------------------------------小动物(funny)
 oneko
 
@@ -727,3 +732,8 @@ shasum
 
 #--------------------------------将json 格式话输出在终端上
 jq
+
+#--------------------------------统计项目代码行数
+cloc
+#--------------------------------ip json
+ip -j a | jq

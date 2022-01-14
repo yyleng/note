@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins 
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /home/cicd/jenkins/jenkins_mount:/var/jenkins_home
+      - /home/cicd/jenkins/jenkins_use/.ssh/:/root/.ssh/
+    ports:
+      - "10240:8080"
+    expose:
+      - "8080"
+      - "50000"
+    user: root
+    privileged: true

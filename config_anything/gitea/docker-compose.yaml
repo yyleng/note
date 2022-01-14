@@ -1,0 +1,23 @@
+version: "3"
+
+networks:
+  cicd:
+    external: false
+
+services:
+  gitea:
+    image: gitea/gitea:1.15.8
+    container_name: gitea
+    environment:
+      - USER_UID=1001
+      - USER_GID=1001
+    restart: always
+    networks:
+      - cicd
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "30000:3000"
+      - "22222:22"

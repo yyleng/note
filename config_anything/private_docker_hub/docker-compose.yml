@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  registry:
+    image: registry
+    ports:
+      - "443:443"
+    volumes:
+      - ./:/etc/docker/registry
+      - /opt/data/registry:/var/lib/registry
