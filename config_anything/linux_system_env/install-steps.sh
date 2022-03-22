@@ -10,8 +10,8 @@
 ##: 1: Install Clash
 wget https://github.com/Dreamacro/clash/releases/download/v1.8.0/clash-linux-amd64-v1.8.0.gz
 gunzip clash-linux-amd64-v1.8.0.gz
-chmod +x clash-linux-amd64-v1.8.0.gz
-mv clash-linux-amd64-v1.8.0.gz /usr/bin/clash
+chmod +x clash-linux-amd64-v1.8.0
+mv clash-linux-amd64-v1.8.0 /usr/bin/clash
 
 ##: 2: Download MonoCloud Config File
 mkdir /etc/clash

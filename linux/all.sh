@@ -93,7 +93,7 @@ git reset --mixed HEAD~1 // 不删除空间改动代码，撤销commit和gaa，�
 git reset --soft HEAD~1  // 不删除空间改动代码，撤销commit，不撤销gaa
 git reset --hard HEAD~1  // 删除空间改动代码，撤销commit，撤销gaa
 git reset --hard 345613  //硬切到指定分支
-git reset --sofy 345613  //软切到指定分支
+git reset --soft 345613  //软切到指定分支
 #查看状态
 gst
 gss
@@ -368,3 +368,7 @@ Host *
 
 #===== docker limit ====
 podman pull <imagename>
+
+#===== tencent meeting ====
+alien -r TencentMeeting_0300000000_2.8.0.1_x86_64.publish.deb #将deb->rpm
+rpm2cpio wemeet-2.8.0.1-2.x86_64.rpm |cpio -ivmd #get rpm content

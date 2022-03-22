@@ -591,7 +591,7 @@ ethtool -K enp2s0 gro on
 
 ## python 
   
-#share file through web
+#share file through web / view picture in directory
 python3 -m http.server 8080
  
 
@@ -737,3 +737,9 @@ jq
 cloc
 #--------------------------------ip json
 ip -j a | jq
+
+#---------------------------------shell查看图片
+alias icat='kitty +kitten icat '
+
+#---------------------------------将deb包转换为rpm
+alien -r *.deb
