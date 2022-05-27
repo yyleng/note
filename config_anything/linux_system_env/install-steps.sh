@@ -5,7 +5,7 @@
 #Github       : https://github.com/TBBtianbaoboy
 #Site         : https://www.lengyangyu520.cn
 #Create Time  : 2021-12-23 23:31:48
-#Description  : 
+#Description  :
 
 ##: 1: Install Clash
 wget https://github.com/Dreamacro/clash/releases/download/v1.8.0/clash-linux-amd64-v1.8.0.gz
@@ -18,6 +18,8 @@ mkdir /etc/clash
 wget -O /etc/clash/config.yaml https://mymonocloud.com/clash/473347/uJCPHbHrZZ8P
 
 ##: 3: Make Clash Auto Start
+# change selinux config
+vim /etc/selinux/config
 vim /usr/lib/systemd/system/clash.service
 #-----
 [Unit]
