@@ -372,3 +372,11 @@ podman pull <imagename>
 #===== tencent meeting ====
 alien -r TencentMeeting_0300000000_2.8.0.1_x86_64.publish.deb #将deb->rpm
 rpm2cpio wemeet-2.8.0.1-2.x86_64.rpm |cpio -ivmd #get rpm content
+
+#===== kitty ibus chinese input error =====
+GLFW_IM_MODULE=ibus kitty
+
+#===== kitty fonts config =====
+~/.local/share/fonts/
+fc-cache -fv
+kitty +list-fonts

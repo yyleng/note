@@ -1,48 +1,19 @@
 # TODO
-
 - 1: **训练写技术文档的能力**：什么地方该有字，什么地方该有图，一定要引起注意。
 - 2: **英语阅读能力**：这是很必要的，可以很高效地阅读英文文档
 
-# SUMMARY
-
-- 3: 毕业设计需求点调研
-- 2: 毕业设计 agent 服务默认安全组规则还没有配置完善
-- 6: 毕业设计总体方案与进度再梳理
-- 8: 开始准备校招----面向岗位和简历进行准备-完善简历
-  - 白天要做
-    - I: 归纳复习 C++/GoLang 语言的知识点
-    - II: 总结复习数据结构与算法的知识点/LeetCode 刷题
-    - III: 总结复习计算机网络与操作系统的知识点
-    - IIII: 总结复习 MySQL/Redis/MongoDB 的知识点
-  - 晚上要做
-    - I: 刷面经并发现和记录问题
-    - II: 刷面试习题并发现和记录问题
-- 9: 在找到工作之后，毕业论文撰写
-
-# TODAY
-
+# FUTURE
 - 1: lua 学习与应用
+- 7: vim lua config study
 - 2: 深入复习 C++ STL
 - 4: BiliBili 左成云 p4/48.01
 
+# TODAY
+
 # TOMORROW
-- 6: lunwen writing
-- 7: biye design[
-    - 0: 网络资产系统探测-add uptime:lastboot
-    - 1: 网络资产批量删除有问题
-    - 2: 网络资产新建数据有效性检查
-    - 3: 开放端口扫描搜索有问题
-    - 4: 登录后的主页面的Logo显示问题
-    - 5: 日志审计页面设计
-    - 6: 系统扫描配置页面设计
-    - 7: 帮助中心使用方法编写
-    - 8: 帮助中心选项图片修改
-    ]
 
 # NEXT
-
-- 1: hanbo 19*16,all full,base shenzheng
-- 5: 社会实践等待成绩
+- 6: hanbor work prepare in advance (what to do | what to study)
 
 
 
