@@ -60,6 +60,9 @@ glg
 glgg
 #全局修改核心编辑器--最终作用于~/.gitconfig文件
 git config --global core.editor nvim
+#同步repo依赖
+git submodule sync
+git submodule update --init --progress
 #修改提交注释并再次提交
 git commit --amend
 #查看全局配置
@@ -380,3 +383,21 @@ GLFW_IM_MODULE=ibus kitty
 ~/.local/share/fonts/
 fc-cache -fv
 kitty +list-fonts
+
+#===== recover nvim copy paste question =====
+sudo dnf install -y xclip
+
+#===== get fedora version =====
+rpm -E %fedora
+
+#===== cmake project jump in lsp ======
+#in main directory cmakelist.txt
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+#build
+mkdir build && cd build
+cmake ..
+cd ..
+#then make a soft link to build/compile_commands.json
+ln -s build/compile_commands.json compile_commands.json
+#check port
+netstat -ano | grep 9002

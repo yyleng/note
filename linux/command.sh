@@ -762,3 +762,6 @@ nproc
 
 #--------------------------screen gif
 peek
+
+#-----------------------download sourses with multithread
+tldr axel
