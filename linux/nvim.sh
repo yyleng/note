@@ -1,85 +1,106 @@
-https://yianwillis.github.io/vimcdoc/doc/help.html
-https://github.com/nanotee/nvim-lua-guide
-https://github.com/neoclide/coc.nvim
-https://github.com/wsdjeg/vim-galore-zh_cn
-https://github.com/rhysd/git-messenger.vim
-https://github.com/rafi/vim-config
-https://github.com/amix/vimrc
-https://github.com/josa42/coc-go
-https://github.com/cweill/gotests
-https://github.com/fatih/vim-go
-https://github.com/rockerBOO/awesome-neovim #ok
-https://github.com/NvChad/NvChad
-https://github.com/gelguy/wilder.nvim
-https://github.com/github/copilot.vim
+################ Plugin Keymap Summary ##############
+#-----------------------------------------------------
+['tpope/vim-abolish'] # 修改变量形式
+(https://github.com/tpope/vim-abolish) # URL
+(:help abolish) # 查看帮助
+### example
+# This is one word under Vim's definition: AbcDef
+n | crc       # to abcDef
+n | crU       # to ABC_DEF 
+n | cr[s|_]   # to abc_def
+n | crm       # to AbcDef
 
-
-
-
------- nvim plugin -------
-Plug 'nvim-lua/popup.nvim' // 忽略
-Plug 'nvim-lua/plenary.nvim' // 忽略
-Plug 'neoclide/coc.nvim', {'branch': 'release'} // lsp补全
-Plug 'fatih/vim-go'                             // go工具 
-Plug 'github/copilot.vim'                       // ai补全
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} // 高亮
-Plug 'morhetz/gruvbox'                            // 高亮
-Plug 'sheerun/vim-polyglot'                        // 高亮
-Plug 'kyazdani42/nvim-web-devicons'                 // 高亮图标
-Plug 'akinsho/bufferline.nvim'                       // 最上面标签栏, ;number 选择标签
-Plug 'famiu/feline.nvim'                          // 最下面状态栏
-Plug 'nvim-telescope/telescope.nvim'            // 搜索, ;ff ;fc ;fg ;fm
-Plug 'scrooloose/nerdcommenter'       // 注释 ctrl-alt-/
-Plug 'windwp/nvim-autopairs'         // 自动括号
-Plug 'tpope/vim-surround'             // 添加括号
-Plug 'tpope/vim-repeat'               // 与上面的配对
-
-#___________________________________________________
-Plug 'tpope/vim-abolish'#修改变量形式
-# normal mode
-### example AbcDef
-crc # to abcDef
-crU # to ABC_DEF 
-cr[s|_] # to abc_def
-crm # to AbcDef
-
-cr. # to abc.def
-cr- # to abc-def
-cr<space> # to abc def
-crt # to Abc Def
+n | cr.       # to abc.def
+n | cr-       # to abc-def
+n | cr<space> # to abc def
+n | crt       # to Abc Def
+#-----------------------------------------------------
+['chaoren/vim-wordmotion'] # 单词切割
+(https://github.com/chaoren/vim-wordmotion) # URL
+(:help wordmotion) # 查看帮助
+### example
+# This is one word under Vim's definition:
+# 	CamelCaseACRONYMWords_underscore1234
+# 	^
+# With this plugin, this becomes six words:
+# 	CamelCaseACRONYMWords_underscore1234
+# 	^    ^   ^      ^     ^         ^
+n | <alt>e
+n | <alt>b
+n | <alt>w
+v | <alt>e
+v | <alt>b
+v | <alt>w
+n | <alt>E
+n | <alt>B
+n | <alt>W
+v | <alt>E
+v | <alt>B
+v | <alt>W
+#-----------------------------------------------------
+['terryma/vim-expand-region'] # v V 框选
+(https://github.com/terryma/vim-expand-region) #URL
+(:help vim-expand-regions) # 查看帮助
+n | v  # 扩展选区
+n | V  # 收缩选区
 #____________________________________________________
-Plug 'chaoren/vim-wordmotion'#大小写移动
-# normal mode
-alt+e # to next
-alt+b # to before
+['andrewradev/splitjoin.vim'] #自动换行
+(https://github.com/AndrewRadev/splitjoin.vim) #URL
+(:help splitjoin) # 查看帮助
+### example
+# This is code block under Lua's definition:
+# { opt = false,; config = function(); require("focus").setup() end }
+#
+# With this plugin, this becomes this:
+# { 
+#     opt = false,
+#     config = function()
+#         require("focus").setup() 
+#     end 
+# }
+gS # 拆分
+gJ # 合并
 #____________________________________________________
-Plug 'terryma/vim-expand-region'#v V 框选
-v # to expand
-V # to shrink
-vip # code segement
-#____________________________________________________
-Plug 'AndrewRadev/splitjoin.vim'#自动换行
-gS # oneline to multiline
-gJ # multiline to oneline
-#____________________________________________________
-Plug 'justinmk/vim-sneak'     // 搜索
+plug 'justinmk/vim-sneak'     // 搜索
 ?????????????????????????????????
 #____________________________________________________
-Plug 'junegunn/vim-easy-align'#对齐
+plug 'junegunn/vim-easy-align'#对齐
 ga <rule>
 ### <rule> is [num|*|**]< =|<space>|:|.|,|&|#|">
 #____________________________________________________
-Plug 'tpope/vim-fugitive' // git
+plug 'tpope/vim-fugitive' // git
 ?????????????????????????????????
 #____________________________________________________
-Plug 'voldikss/vim-floaterm'#显示终端
-F7
-F8
-F9
-F12
+plug 'voldikss/vim-floaterm'#显示终端
+f7
+f8
+f9
+f12
 #____________________________________________________
-Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }#vim命令行
+plug 'gelguy/wilder.nvim', { 'do': ':updateremoteplugins' }#vim命令行
 :
+#____________________________________________________
+["terrortylor/nvim-comment"] #代码注释
+n | gcc 
+v | gc
+#____________________________________________________
+["phaazon/hop.nvim"] #热词跳转，可以跳转到任何想要跳到的地方
+n | <leader>h
+n | <leader>j
+n | <leader>c1
+n | <leader>c2
+#____________________________________________________
+["akinsho/nvim-toggleterm.lua"] #vim shell   :vs :sp 是用来打开vim的
+v | <f12> |
+n | <f12> |
+#____________________________________________________
+["numtostr/fterm.nvim"] #打开一个shell窗口并运行相应的命令
+n | <space>g
+#____________________________________________________
+["tpope/vim-fugitive"] #在vim 中运行 git 命令
+c | g
+c | git
+#____________________________________________________
 #____________________________________________________
 
 #############all##############
@@ -183,6 +204,7 @@ ctrl-w-< #水平修改分屏大小
 ctrl-w-> #水平修改分屏大小
 ctrl-w-= #水平恢复分屏大小
 <space>e   #打开文件目录
+<c-w><c-r> #调整窗口位置
 
 # 8:跳转
 CTRL-O  #转到上一个标记
@@ -232,6 +254,7 @@ v...   #开始标记
 vH     #选中当前位置到行首(第一个非空字符)
 vL     #选中当前位置到行尾
 viw    #选中当前光标处的单词
+vip    #选中当前文本段
 vi"    #选中“”中的内容
 vi'    #选中''中的内容
 vi)    #选中()中的内容

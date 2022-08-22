@@ -390,6 +390,10 @@ sudo dnf install -y xclip
 #===== get fedora version =====
 rpm -E %fedora
 
+#===== rpm alternative ======
+rpm -qa | grep '*'
+rpm -qa *.rpm
+
 #===== cmake project jump in lsp ======
 #in main directory cmakelist.txt
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -401,3 +405,7 @@ cd ..
 ln -s build/compile_commands.json compile_commands.json
 #check port
 netstat -ano | grep 9002
+#config command completion, mv config file to follow site
+/usr/share/zsh/site-functions
+# R list directory and subdirectories file
+ls **/*.sh
