@@ -422,6 +422,7 @@ lspci
 
 #查看系统的位数
 getconf LONG_BIT
+lshw -class cpu
 
 #查看系统内存页的大小
 getconf PAGE_SIZE
@@ -765,3 +766,6 @@ peek
 
 #-----------------------download sourses with multithread
 tldr axel
+
+#-----------------------shell encode
+gzexe filename

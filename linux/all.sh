@@ -409,3 +409,11 @@ netstat -ano | grep 9002
 /usr/share/zsh/site-functions
 # R list directory and subdirectories file
 ls **/*.sh
+# lsb_release
+lsb_release -si
+# add user to docker group
+sudo usermod -aG docker $USER && newgrp docker
+# docker proxy setting
+
+# watch image
+ffplay -pixel_format nv12 -f rawvideo  -video_size 500x376  -i  500x376.nv12
