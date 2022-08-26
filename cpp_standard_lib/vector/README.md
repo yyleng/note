@@ -59,3 +59,14 @@ For operations that involve inserting or removing elements at positions other th
 # Public member functions
 
 - (constructor)
+  **default**:
+- vector<int> v;(初始化一个空的 vector)
+  **fill**
+- vector<int>v1(10);(初始化一个 size 和 capacity 为 10 的 vector, 默认值为 0 )
+- vector<int>v2(10,1);(初始化一个 size 和 capacity 为 10 的 vector, 默认值为 1 )
+  **range**
+- vector<int>v3(v2.begin()+1,v2,end());(使用 vector v2 的局部范围来对 v3 进行初始化)
+  **copy**
+- vector<int>v4(v3);(使用 vector v3 来对 v4 进行初始化)
+  **move**
+- vector<int>v5(std::move(v4));
