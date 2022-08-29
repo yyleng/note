@@ -14,6 +14,8 @@ grst file_name
 #查看提交日志
 glg
 glgg
+glo
+glol
 #全局修改核心编辑器--最终作用于~/.gitconfig文件
 git config --global core.editor nvim
 #同步repo依赖
@@ -87,3 +89,18 @@ gra origin ssh://git@192.168.30.140:2222/ksp/ksp_web.git
 grrm origin
 # 重命名远程仓库名
 grmv origin
+
+## 打标签
+# 为当前提交打标签
+g tag -a v1.0 -m "版本1.0"
+# 为历史提交打标签
+g tag -a v1.0 commit-sha -m "版本1.0"
+# 删除本地标签
+git tag -d v1.0
+# 删除远程标签
+gp origin -d v1.0
+# 列出所有标签
+gtv
+# 推送仓库和所有标签到远程仓库
+gpoat
+
