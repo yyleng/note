@@ -1,7 +1,7 @@
 #====== c++ debug lib ======
 ```sh
 cd ../tools
-auto-extract dbg-macro-master.zip 
+autoe dbg-macro-master.zip 
 cd dbg-macro-master
 sudo cp dbg.h /usr/include/dbg.h
 #site:https://github.com/sharkdp/dbg-macro

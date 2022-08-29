@@ -1,1 +1,0 @@
-cmd_/home/aico/github/note/program/linux-kernel/hello-1/modules.order := {   echo /home/aico/github/note/program/linux-kernel/hello-1/hello-1.ko;   echo /home/aico/github/note/program/linux-kernel/hello-1/hello-2.ko;   echo /home/aico/github/note/program/linux-kernel/hello-1/hello-4.ko; :; } | awk '!x[$$0]++' - > /home/aico/github/note/program/linux-kernel/hello-1/modules.order
