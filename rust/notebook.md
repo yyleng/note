@@ -324,3 +324,93 @@ fn main() {
 ### 函数传值与返回
 
 > 同样遵循所有权的全部规则(颠覆性)
+
+## 引用
+
+```rust
+    let a = 3_u32;
+    // 引用
+    let b = &a;
+    // *b 为解引用, 即可以获取 b 所指向的整型值
+    assert_eq!(5,*b)
+```
+
+### 不可变引用
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    // & 符号即是引用，它们允许你使用值，但是不获取所有权
+    let len = calculate_length(&s1);
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &String) -> usize {
+    // 正如变量默认不可变一样，引用指向的值默认也是不可变的
+    // 所以这里只能读取，不可修改
+    s.len()
+}
+```
+
+### 可变引用
+
+```rust
+fn main() {
+    let mut s1 = String::from("hello");
+    // & 符号即是引用，它们允许你使用值，但是不获取所有权
+    let len = calculate_length(&mut s1);
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &mut String) -> usize {
+    s.len()
+}
+```
+
+```rust
+// 基本类型与复杂类型的可变引用区别
+fn main() {
+    let mut num = 10;
+    let num_ref = &mut num;
+    *num_ref = 20;               // i32没实现Deref，需要手动解引用
+    println!("num: {}", num);
+
+    let mut s = String::from("hello");
+    let s_ref = &mut s;
+    s_ref.push_str(" world");    // String默认实现Deref，不需要手动解引用
+    (*s_ref).push_str("!!!");    // 手动解引用也可以
+    println!("s: {}", s);
+}
+```
+
+**注意**
+
+```txt
+1. 引用的作用域从创建开始，一直持续到它最后一次使用的地方，这个跟变量的作用域有所不同，变量的作用域从创建持续到某一个花括号 }
+2. 同一作用域，特定数据只能有一个可变引用(因为有多个可能导致数据竞争)
+3. 可变引用与不可变引用不能同时存在(因为不可变引用不希望读取到修改后的数据)
+```
+
+### 悬空引用
+
+> 在 Rust 中编译器可以确保引用永远也不会变成悬空状态(悬空状态很危险，编译器不允许)
+> 当你拥有一些数据的引用，编译器可以确保数据不会在其引用之前被释放，要想释放数据，必须先停止其引用的使用。
+
+```rust
+fn main() {
+    let reference_to_nothing = dangle();
+}
+
+// 错误的代码
+fn dangle() -> &String {
+    let s = String::from("hello");
+    &s
+}
+```
+
+### 总结
+
+```txt
+1. 同一作用域，你只能拥有要么一个可变引用, 要么任意多个不可变引用
+2. 引用必须总是有效的
+```
