@@ -216,6 +216,10 @@ fn main() {
 }
 ```
 
+> 字符串类型是 UTF-8 编码，也就是字符串中的字符所占的字节数是变化的(1 - 4)
+
+> 常用字符串主要指 String 类型和 &str 字符串切片类型，这两个类型都是 UTF-8 编码
+
 ## 单元类型
 
 > (), main 函数的返回值就是 ()。
@@ -414,3 +418,302 @@ fn dangle() -> &String {
 1. 同一作用域，你只能拥有要么一个可变引用, 要么任意多个不可变引用
 2. 引用必须总是有效的
 ```
+
+# 复合类型
+
+## 编译器属性标记
+
+> #![...] 将对整个文件有效, #[...]只对该行下面的块有效
+
+## 字符串和切片
+
+> 字符串字面量也是切片, 因为 &str 表示字符串切片类型
+
+```rust
+    // String 类型有切片
+    let s = String::from("hello world");
+    // 在切片数据结构内部会保存开始的位置和切片的长度，其中长度是通过 终止索引 - 开始索引 的方式计算得来的
+    let hello = &s[0..5];
+    let world = &s[6..11];
+```
+
+```rust
+fn main() {
+    // 数组类型也有切片
+    let a = [1, 2, 3, 4, 5];
+    let slice = &a[1..3];
+    assert_eq!(slice, &[2, 3]);
+}
+```
+
+### String 类型与 &str 类型转换
+
+```rust
+fn main() {
+    let s = String::from("hello world");
+    // 将 String 转换为 &str 的三种方式, 得益于 deref 隐式强制转换
+    say_hello(&s);
+    say_hello(&s[..]);
+    say_hello(s.as_str());
+}
+fn say_hello(message: &str) {
+    println!("{}", message);
+}
+```
+
+### 字符串索引
+
+> 字符串的底层的数据存储格式实际上是 u8，一个字节数组。
+
+```rust
+fn main() {
+    let s = String::from("hello world");
+    // 无法使用索引的方式访问字符串的某个字符
+    // 需使用切片
+    println!("{}", &s[..1]);
+    let s = String::from("中国");
+    // 使用如下也 ok
+    // let s = "中国人";
+    // 中文字符 UTF-8, 占用三个字节
+    // 需使用切片
+    println!("{}", &s[..3]);
+    // 无法使用索引的方式访问字符串的某个字符
+    // 需使用切片
+    println!("{}", &"中国人"[..3]);
+}
+```
+
+### 操作字符串
+
+```rust
+// 以 Unicode 字符的方式遍历字符串
+fn main() {
+for c in "中国人".chars() {
+    println!("{}", c);
+}
+}
+```
+
+```rust
+// 返回字符串的底层字节数组表现形式
+fn main() {
+for b in "中国人".bytes() {
+    println!("{}", b);
+}
+}
+```
+
+## 元组
+
+> 元组是用括号将多个类型组合到一起
+
+```rust
+fn main() {
+    // 元组
+    let tup: (i32, f64, u32) = (500, 6.4, 1);
+    // 用模式匹配解构(_,..)
+    let (x, y, z) = tup;
+    let (.., j, _) = tup;
+    // (.) 访问
+    println!("{} {} {}", tup.0, tup.1, tup.2);
+    println!("The value of tup is: {:?}", tup);
+    println!("The value of x is: {}", x);
+    println!("The value of y is: {}", y);
+    println!("The value of z is: {}", z);
+    println!("The value of j is: {}", j);
+}
+```
+
+> 元组在函数返回值场景很常用
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+
+    let (s2, len) = calculate_length(s1);
+
+    println!("The length of '{}' is {}.", s2, len);
+}
+
+fn calculate_length(s: String) -> (String, usize) {
+    let length = s.len(); // len() 返回字符串的长度
+
+    (s, length)
+}
+```
+
+## 结构体
+
+```rust
+// 结构体声明，结尾无(;)
+// 这种形式的结构体数据所有权都归自己
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn main() {
+    // 初始化结构体时每个字段都需要进行初始化
+    let mut _user1 = User {
+        active: true,
+        username: String::from("someone"),
+        email: String::from("2237616014@qq.com"),
+        sign_in_count: 1,
+    };
+    let user2 = build_user(String::from("someone"), String::from("2237616014"));
+    // 根据已有的结构体更新旧的结构体
+    // 必须要将结构体实例声明为 mut
+    // ..user2 必须在结构体的尾部使用
+    _user1 = User {
+        email: String::from("123"),
+        // 结构体更新语法跟赋值语句 = 非常相像
+        // 所有权转移
+        ..user2
+    };
+    // 可以通过结构体的(.)来访问字段
+    println!("{}", _user1.username);
+    println!("{}", _user1.email);
+    println!("{}", _user1.sign_in_count);
+    println!("{}", _user1.active);
+    // user2.username 所有权转移，无法访问
+    //println!("{}", user2.username);
+    // 但其他 copy 还可以访问
+    println!("{}", user2.email);
+    println!("{}", user2.sign_in_count);
+    println!("{}", user2.active);
+}
+
+fn build_user(email: String, username: String) -> User {
+    // 如果同名，可以直接使用缩略的方式进行初始化
+    User {
+        active: true,
+        username,
+        email,
+        sign_in_count: 1,
+    }
+}
+```
+
+## 元组结构体
+
+```rust
+// 元组结构体声明
+#[derive(Debug)]
+struct Point(i32,i32,i32);
+
+fn main() {
+    let origin = Point(1,2,3);
+    println!("{:?}",origin);
+}
+```
+
+## 单元结构体
+
+> 当我们不关心结构体元素名称时有用
+
+```rust
+struct AlwaysEqual;
+
+fn main() {
+    let sum = AlwaysEqual;
+    // Trait impl
+    impl PartialEq for AlwaysEqual {
+        fn eq(&self, _: &AlwaysEqual) -> bool {
+            true
+        }
+        fn ne(&self, _: &AlwaysEqual) -> bool {
+            false
+        }
+    }
+    println!("{:?}", sum.eq(&sum));
+}
+```
+
+## 结构体数据所有权
+
+> 当一个结构体中的数据是借用时，需要引入[生命周期](TODO)
+
+```rust
+struct User {
+    active: bool,
+    username: &str,
+    email: &str,
+    sign_in_count: u64,
+}
+```
+
+## 结构体标记输出
+
+```rust
+// 添加这个 Debug 派生标记，这样就不需要自己去实现 Debug Trait
+// 当结构体较大时，我们可能希望能够有更好的输出表现，此时可以使用 {:#?} 来替代 {:?}
+#[derive(Debug)]
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+```
+
+> 以下为自己实现 Debug
+
+```rust
+use std::fmt;
+
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl fmt::Debug for Rectangle {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Rectangle {\
+            {
+                width: {},
+                height: {}
+            }}", self.width, self.height)
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {:?}", rect1);
+}
+```
+
+## 宏调试
+
+> 该宏会拿走表达式的所有权，然后打印出相应的文件名、行号等 debug 信息，当然还有我们需要的表达式的求值结果,
+> 除此之外，它最终还会把表达式值的所有权返回！
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    _width: u32,
+    _height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        _width: dbg!(30 * scale),
+        _height: 50,
+    };
+    println!("rect1 is {:?}", rect1);
+    dbg!(&rect1);
+}
+```
+
+# 第三方库
+
+| 名称       | 用途                    |
+| ---------- | ----------------------- |
+| num        | 处理复数等问题          |
+| utf8_slice | 处理 UTF-8 字符串等问题 |
