@@ -340,6 +340,6 @@ lsb_release -si
 # add user to docker group
 sudo usermod -aG docker $USER && newgrp docker
 # docker proxy setting
-
+TODO
 # watch image
 ffplay -pixel_format nv12 -f rawvideo  -video_size 500x376  -i  500x376.nv12
