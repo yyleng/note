@@ -1,3 +1,10 @@
+# 第三方库
+
+| 名称       | 用途                    |
+| ---------- | ----------------------- |
+| num        | 处理复数等问题          |
+| utf8_slice | 处理 UTF-8 字符串等问题 |
+
 # 基础语法
 
 ## 基本变量声明
@@ -596,7 +603,7 @@ fn build_user(email: String, username: String) -> User {
 }
 ```
 
-## 元组结构体
+### 元组结构体
 
 ```rust
 // 元组结构体声明
@@ -609,7 +616,7 @@ fn main() {
 }
 ```
 
-## 单元结构体
+### 单元结构体
 
 > 当我们不关心结构体元素名称时有用
 
@@ -631,7 +638,7 @@ fn main() {
 }
 ```
 
-## 结构体数据所有权
+### 结构体数据所有权
 
 > 当一个结构体中的数据是借用时，需要引入[生命周期](TODO)
 
@@ -644,7 +651,7 @@ struct User {
 }
 ```
 
-## 结构体标记输出
+### 结构体标记输出
 
 ```rust
 // 添加这个 Debug 派生标记，这样就不需要自己去实现 Debug Trait
@@ -688,7 +695,7 @@ fn main() {
 }
 ```
 
-## 宏调试
+### 宏调试
 
 > 该宏会拿走表达式的所有权，然后打印出相应的文件名、行号等 debug 信息，当然还有我们需要的表达式的求值结果,
 > 除此之外，它最终还会把表达式值的所有权返回！
@@ -711,9 +718,833 @@ fn main() {
 }
 ```
 
-# 第三方库
+## 枚举
 
-| 名称       | 用途                    |
-| ---------- | ----------------------- |
-| num        | 处理复数等问题          |
-| utf8_slice | 处理 UTF-8 字符串等问题 |
+### 基本枚举
+
+```rust
+#[derive(Debug)]
+enum PokerSuit {
+  _Clubs,
+  _Spades,
+  Diamonds,
+  Hearts,
+}
+fn main() {
+    let heart = PokerSuit::Hearts;
+    let diamond = PokerSuit::Diamonds;
+
+    print_suit(heart);
+    print_suit(diamond);
+}
+fn print_suit(card: PokerSuit) {
+println!("{:?}",card);
+}
+```
+
+> 可以直接将数据信息关联到枚举成员上,任何类型的数据都可以放入枚举成员中
+
+```rust
+enum PokerCard {
+    _Clubs(u8),
+    Spades(u8),
+    Diamonds(char),
+    _Hearts(char),
+}
+impl PokerCard {
+    fn get_suit(&self) -> &str {
+        // 匹配枚举值并处理枚举值关联的数据
+        match self {
+            PokerCard::_Clubs(_) => "Clubs",
+            PokerCard::Spades(v) => {
+                if *v == 5 {
+                    "Ace of Spades"
+                } else {
+                    "Spades"
+                }
+            }
+            PokerCard::Diamonds(_) => "Diamonds",
+            PokerCard::_Hearts(_) => "Hearts",
+        }
+    }
+}
+fn main() {
+   let _c1 = PokerCard::Spades(5);
+   let _c2 = PokerCard::Diamonds('A');
+   // => Ace of Spades
+   println!("{}", _c1.get_suit());
+}
+```
+
+### Option 枚举
+
+> 为了拥有一个可能为空的值，你必须要显式的将其放入对应类型的 Option<T> 中
+
+```rust
+fn main() {
+    let a = 1;
+    let mut o: Option<i32> = None;
+    if o.is_none() {
+        println! ("is none");
+    }
+    o = Some(a);
+    if o.is_some() {
+        println!("{}", o.unwrap());
+    }
+}
+```
+
+## 数组
+
+> array 为定长数组,是基本类型，vector 为动态数组, 是集合类型
+
+### array
+
+```rust
+fn main() {
+    // 初始化
+    // 编译器会根据上下文自动推断变量类型
+    let _arr = [1, 2, 3, 4, 5];
+    let _arr3 = [3; 5]; // [3, 3, 3, 3, 3]
+
+    let _arr2: [u8; 5] = [1, 2, 3, 4, 5];
+    let _blank2: [u8; 5] = [0; 5]; // [0, 0, 0]
+
+    // 二维数组
+    let _arrays: [[u8; 5]; 4]  = [_arr, _arr2, _arr3, _blank2];
+
+    // array 可以直接通过下标访问
+    println!("{}", _arr[0]);
+
+    // 当访问数组的下表超出数组的范围时，会 panic
+    // println!("{}", _arr[6]);
+
+    // 可以使用 slice 来访问数组的一部分
+    // 创建切片的代价非常小，因为切片只是针对底层数组的一个引用
+    // 切片类型[T]拥有不固定的大小，而切片引用类型&[T]则具有固定的大小
+    let _slice = &_arr[0..2];
+    assert_eq!(_slice, &[1, 2]);
+
+    // 借用arrays的元素用作循环中
+    for a in &_arrays {
+        for b in a.iter() {
+            println!("{}", b);
+        }
+    }
+}
+```
+
+# 流程控制
+
+## if
+
+> 和 CPP 大同小异，唯一不同的就是 if 语句可以作为表达式
+
+```rust
+fn main() {
+    let false_value = false;
+    // 作为表达式
+    let num = if false_value {
+        1
+    } else {
+        2
+    };
+    dbg!(num);
+}
+```
+
+## continue & break
+
+> 和 CPP 大同小异
+> break 可以单独使用，也可以带一个返回值，有些类似 return
+
+## 循环
+
+### for
+
+> 用于循环集合中的元素(most population)
+
+```rust
+fn main() {
+    for i in 1..=5 {
+        // => 1,2,3,4,5
+        println!("{}", );
+    }
+}
+```
+
+```rust
+fn main() {
+    let a = [4, 3, 2, 1];
+    // `.iter()` 方法把 `a` 数组变成一个迭代器
+    // `.enumerate()` 方法把迭代器变成一个元组，元组的第一个元素是下标，第二个元素是值
+    // 使用迭代这种方式访问是连续的，不会被可变借用打断
+    // for 并不会使用索引去访问数组，因此更安全也更简洁，同时避免 运行时的边界检查，性能更高。
+    for (i, v) in a.iter().enumerate() {
+        println!("第{}个元素是{}", i + 1, v);
+    }
+}
+```
+
+| 使用方法                    | 等价使用方式                                    | 所有权     |
+| --------------------------- | ----------------------------------------------- | ---------- |
+| for item in collection      | for item in IntoIterator::into_iter(collection) | 转移所有权 |
+| for item in &collection     | for item in collection.iter()                   | 不可变借用 |
+| for item in &mut collection | for item in collection.iter_mut()               | 可变借用   |
+
+### while
+
+> 和 CPP 大同小异
+
+### loop
+
+> 无条件循环, loop 是一个表达式
+
+```rust
+fn main() {
+    let mut counter = 0;
+
+    let result = loop {
+        counter += 1;
+        // loop 可以结合 if & break 来实现有条件循环
+        if counter == 10 {
+            // 类似 return 用法, 别遗漏分号
+            break counter * 2;
+        }
+    };
+
+    println!("The result is {}", result);
+}
+```
+
+# 模式匹配
+
+## match
+
+> match 用于多模式匹配，match 是一个表达式
+
+### 基本用法
+
+```rust
+enum Direction {
+    East,
+    West,
+    North,
+    South,
+}
+
+fn main() {
+    let dire = Direction::South;
+    // 所有分支的表达式最终返回值的类型必须相同
+    match dire {
+        // 模式 => 表达式(返回())
+        Direction::East => println!("East"),
+        // 模式 | 模式 => {}({}中返回表达式())
+        Direction::North | Direction::South => {
+            println!("South or North");
+        },
+        // 通配符(_) => 表达式(返回())
+        // 用 (_) 来代表未列出的所有可能性
+        _ => println!("West"),
+    };
+}
+```
+
+### 使用 match 表达式赋值
+
+```rust
+enum IpAddr {
+   Ipv4,
+   Ipv6
+}
+
+fn main() {
+    let ip1 = IpAddr::Ipv6;
+    let ip_str = match ip1 {
+        IpAddr::Ipv4 => "127.0.0.1",
+        _ => "::1",
+    };
+
+    println!("{}", ip_str);
+}
+```
+
+### 模式绑定
+
+```rust
+enum IpAddr {
+   _Ipv4,
+   Ipv6(String),
+}
+
+fn main() {
+    let ip1 = IpAddr::Ipv6(String::from("::1"));
+    let ip_str = match ip1 {
+        // 枚举值未绑定数据
+        IpAddr::_Ipv4 => String::from("IPv4"),
+        // 处理枚举值绑定的数据
+        IpAddr::Ipv6(ip) => ip,
+    };
+
+    println!("{}", ip_str);
+}
+```
+
+## if let 用于单模式匹配
+
+```rust
+// Some 单个匹配
+fn main() {
+    let a = Some(1);
+    // a 是否匹配 Some(1)
+    if let Some(1) = a {
+        println!("{}", 1);
+    }
+}
+// None 单个匹配
+fn main() {
+    let a: Option<i32> = None;
+    if let None = a {
+        println!("{}", 1);
+    }
+}
+```
+
+### matches! 匹配
+
+```rust
+enum MyEnum {
+    Foo,
+    Bar
+}
+
+fn main() {
+    let v = vec![MyEnum::Foo,MyEnum::Bar,MyEnum::Foo];
+    // matches! 将一个表达式跟模式进行匹配
+    let filter = v.iter().filter(|x| matches!(x,MyEnum::Foo)).map(|x| match x {
+        MyEnum::Foo => "foo",
+        MyEnum::Bar => "bar",
+    }).collect::<Vec<_>>();
+    for x in filter {
+        println!("{}",x);
+    }
+}
+```
+
+```rust
+// 更多用法
+#![allow(unused)]
+fn main() {
+    let foo = 'f';
+    // 范围匹配
+    assert!(matches!(foo, 'A'..='Z' | 'a'..='z'));
+
+    let bar = Some(4);
+    // 匹配守卫
+    assert!(matches!(bar, Some(x) if x > 2));
+}
+```
+
+### 变量覆盖在 match 中的用法
+
+> 可以有效用于提取 Option<T> 有效值, 当然，还可以有更多用法
+
+```rust
+// if let
+fn main() {
+   // Some<T> 和 None 都是 Option<T> 下的枚举值
+   let age = Some(30);
+   println!("在匹配前，age是{:?}",age);
+   // age => 30
+   if let Some(age) = age {
+       println!("匹配出来的age是{}",age);
+   }
+
+   println!("在匹配后，age是{:?}",age);
+}
+```
+
+```rust
+fn main() {
+   let age = Some(30);
+   println!("在匹配前，age是{:?}",age);
+   match age {
+       // age => 30
+       Some(age) =>  println!("匹配出来的age是{}",age),
+       _ => ()
+   }
+   println!("在匹配后，age是{:?}",age);
+}
+```
+
+### 匹配守卫
+
+> 匹配守卫（match guard）是一个位于 match 分支模式之后的额外 if 条件，它能为分支模式提供更进一步的匹配条件
+
+```rust
+#![allow(unused)]
+fn main() {
+let num = Some(4);
+
+match num {
+    // 匹配守卫
+    Some(x) if x < 5 => println!("less than five: {}", x),
+    Some(x) => println!("{}", x),
+    None => (),
+}
+}
+```
+
+### @绑定
+
+> 当你既想要限定分支范围，又想要使用分支的变量时，就可以用 @ 来绑定到一个新的变量上
+
+**助记**
+
+> @ 符号右侧是一个模式(pattern), 如果这个模式匹配就把匹配值绑定到 @ 符号左侧的变量上。
+
+```rust
+#![allow(unused)]
+fn main() {
+enum Message {
+    Hello { id: i32 },
+}
+
+let msg = Message::Hello { id: 5 };
+
+match msg {
+    // 范围匹配，同时将 id 值赋给 id_variable 变量
+    // 如果这里直接访问 id 值的话会出错
+    Message::Hello { id: id_variable @ 3..=7 } => {
+        println!("Found an id in range: {}", id_variable)
+    },
+    Message::Hello { id: 10..=12 } => {
+        println!("Found an id in another range")
+    },
+    Message::Hello { id } => {
+        println!("Found some other id: {}", id)
+    },
+}
+}
+```
+
+#### @前绑定后解构
+
+> 使用 @ 还可以在绑定新变量的同时，对目标进行解构
+
+```rust
+#[derive(Debug)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+fn main() {
+    // 绑定新变量 `p`，同时对 `Point` 进行解构
+    let p @ Point {x: px, y: py } = Point {x: 10, y: 23};
+    println!("x: {}, y: {}", px, py);
+    println!("{:?}", p);
+
+
+    let point = Point {x: 10, y: 5};
+    if let p @ Point {x: 10, y} = point {
+        println!("x is 10 and y is {} in {:?}", y, p);
+    } else {
+        println!("x was not 10 :(");
+    }
+}
+```
+
+#### 模式绑定新变量
+
+```rust
+fn main() {
+    match 1 {
+        // 模式绑定新变量
+        num @ (1 | 2) => {
+            println!("{}", num);
+        }
+        _ => {}
+    }
+}
+```
+
+```rust
+fn main() {
+    let a = Some(42);
+    match a {
+        // 模式绑定新变量
+        // 同时进行变量覆盖
+        num @ Some(a) if a > 10 => {
+            println!("{}", num.unwrap());
+            println!("{}", a);
+        }
+        _ => {}
+    }
+}
+```
+
+## while let
+
+```rust
+fn main(){
+    let mut vec = vec![1, 2, 3];
+    // 匹配则继续循环(这是出栈)
+    while let Some(x) = vec.pop() {
+        println!("{}", x);
+    }
+}
+```
+
+# 方法 Method
+
+> Rust 的方法往往跟 struct 、enum 、特征(Trait)一起使用
+
+## struct
+
+```rust
+#![allow(unused)]
+// 默认当前文件可访问, 可以通过pub声明公开
+pub struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+// 可以有多个 impl 定义, 方便代码组织而已(效果一样)
+impl Rectangle {
+    // Self 就是 Rectangle struct 类型
+    // 这就是构造函数, 也称为关联函数
+    // 有一个约定俗成的规则，使用 new 来作为构造函数的名称
+    pub fn new(width: u32, height: u32) -> Self {
+        Rectangle { width, height }
+    }
+    // self 是 Rectangle struct 的实例
+    // self 也具有所有权的特征(self | &self | &mut self)
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+    pub fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+
+fn main() {
+    // 类似 cpp 中调用静态成员函数，因为此时还未实例化 Rectangle struct
+    let rect1 = Rectangle::new(30, 50);
+    let rect2 = Rectangle::new(10, 40);
+
+    // rect1 会根据调用函数的第一个self类型自动解引用
+    println!("{}", rect1.width());
+    println!("{}", rect1.height);
+    println!("{}", rect1.can_hold(&rect2));
+}
+```
+
+## enum
+
+```rust
+// 方法实现和结构体也一样, 只是数据用法不同
+#![allow(unused)]
+#[derive(Debug)]
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+impl Message {
+    fn call(&self) {
+        match self {
+            Message::Quit => {
+                println!("Quit");
+            }
+            Message::Move { x, y } => {
+                println!(
+                    "Move to: {}, {}",
+                    x,
+                    y
+                );
+            }
+            Message::Write(text) => {
+                println!("Write: {}", text);
+            }
+            Message::ChangeColor(r, g, b) => {
+                println!(
+                    "Change color to: {}, {}, {}",
+                    r,
+                    g,
+                    b
+                );
+            }
+        }
+    }
+}
+
+fn main() {
+    let m = Message::Write(String::from("hello"));
+    m.call();
+}
+```
+
+# 泛型和特征
+
+## struct 中使用范型
+
+```rust
+#[derive(Debug)]
+#[allow(unused)]
+// x,y 不同类型时
+struct Point<T,U> {
+    x: T,
+    y: U,
+}
+
+fn main() {
+    let p = Point{x: 1, y :1.1};
+    println!("{:?}", p);
+}
+```
+
+## enum 中使用范型
+
+```rust
+// 卧龙(值存在否应用)
+enum Option<T> {
+    Some(T),
+    None,
+}
+// 凤雏(值正确否应用)
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+## Method 方法中使用范型
+
+```rust
+#[allow(unused)]
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+fn main() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}
+```
+
+## Method 方法中定义范型
+
+```rust
+struct Point<T, U> {
+    x: T,
+    y: U,
+}
+
+impl<T, U> Point<T, U> {
+    // 原有基础上的 T,U 扩充
+    fn mixup<V, W>(self, other: Point<V, W>) -> Point<T, W> {
+        Point {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 5, y: 10.4 };
+    let p2 = Point { x: "Hello", y: 'c'};
+
+    let p3 = p1.mixup(p2);
+
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+}
+
+```
+
+## 为具体的泛型类型实现方法
+
+```rust
+// 只有 T 为 f32 的 Point 实例才可以调用该方法
+impl Point<f32> {
+    fn distance_from_origin(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+```
+
+## const 泛型
+
+TODO
+
+# Trait
+
+> Trait 定义了一个可以被共享的行为，只要实现了 Trait，你就能使用该行为(类似接口)
+
+> 关于特征实现与定义的位置，有一条非常重要的原则：如果你想要为类型 A 实现特征 T，那么 A 或者 T 至少有一个是在当前作用域中定义的
+
+```rust
+#![allow(unused)]
+// 定义 Trait 接口为公开
+pub trait Summary {
+    // 具有默认实现的 Trait 接口
+    fn summize(&self) -> String {
+        String::from("read more...")
+    }
+}
+
+struct Post {
+    content: String,
+}
+
+struct Web {
+    content: String,
+}
+
+impl Summary for Web {
+    // 使用默认实现的 Trait 接口方法
+}
+
+// 为Post struct 实现 Trait 接口
+impl Summary for Post {
+    // 重写 Trait 接口中的方法
+    fn summize(&self) -> String {
+        format!("{}", self.content)
+    }
+}
+
+// String 定义在标准库中,咱们使用自定义的 trait Summary 为 String 添加Trait
+impl Summary for String {
+    fn summize(&self) -> String {
+        format!("{}", self)
+    }
+}
+
+// i32 定义在标准库中,咱们使用自定义的 trait Summary 为 i32 添加Trait
+impl Summary for i32 {
+    fn summize(&self) -> String {
+        format!("{}", self)
+    }
+}
+
+fn main() {
+    let post = Post {
+        content: String::from("Post Summary"),
+    };
+    let web = Web {
+        content: String::from("Web Summary"),
+    };
+    let content = String::from("String Summary");
+    let i32_content = i32::from(1);
+    notify(&post);
+    notify(&web);
+    notify(&content);
+    notify(&i32_content);
+}
+
+
+// 任何实现了 Summary 特征的类型作为该函数的参数，下面这种是语法糖
+// fn notify(item: &impl Summary) {
+//     println!("Breaking news! {}", item.summize());
+// }
+
+// 接上，notify 真正的语法形式如下:
+// T: Summary 说明了 T 必须实现 Summary Trait
+// 其中，T 是泛型，会自动根据传入的参数类型推导出 T 类型
+fn notify<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summize());
+}
+```
+
+## 多重 Trait
+
+> 参数必须实现所有 Trait
+
+```rust
+// 语法糖形式
+fn notify(item: &(impl Summary + Display)) {}
+// 真正语法形式
+fn notify<T: Summary + Display>(item: &T){}
+```
+
+## where Trait
+
+```rust
+use std::fmt::Debug;
+use std::fmt::Display;
+// where 的存在用于改进多重 Trait 引起到语法复杂性
+fn some_function<T>(t: &T) -> i32
+    where T: Display + Debug,
+{
+    println!("{}", t);
+    1
+}
+
+fn main(){
+    let _ = some_function(&"hello");
+}
+```
+
+## 条件 Trait
+
+```rust
+// 为实现了 Display Trait 的 T 实现 ToString
+impl<T: Display> ToString for T {
+    // --snip--
+}
+```
+
+## 获取数组中最大值
+
+```rust
+// NoCopy
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut index = 0;
+
+    for (i,item) in list.iter().enumerate() {
+        if item > &list[index] {
+            index = i;
+        }
+    }
+
+    &list[index]
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&number_list);
+    println!("The largest number is {}", result);
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest(&char_list);
+    println!("The largest char is {}", result);
+}
+```
+
+## 调用方法需要引入 Trait
+
+```rust
+// TODO
+// 不解
+use std::convert::TryInto;
+
+fn main() {
+  let a: i32 = 10;
+  let b: u16 = 100;
+  let b_ = b.try_into().unwrap();
+  if a < b_ {
+    println!("Ten is less than one hundred.");
+  }
+}
+```
