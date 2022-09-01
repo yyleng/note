@@ -1,3 +1,4 @@
+#!/bin/sh
 # download rust and cargo and toolchains
 curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
 # download rust-analyzer
@@ -14,6 +15,8 @@ chmod +x ~/.local/bin/rust-analyzer
 # cargo build [--release]
 # cargo run [--release]
 # cargo check
+# cargo doc [--open]
+# cargo test
 
 #### tool
 # Cargo registry manager
