@@ -116,6 +116,7 @@ fn plus_or_minus(x:i32) -> i32 {
     // 浮点型无效数据数值为 NaN, 使用 is_nan() 来判断
     let v = (-4.0_f64).sqrt();
     if !v.is_nan() {
+    // f32 or f64 has implemented Debug Trait
     println!("{:?}", v);
     }
 
@@ -129,6 +130,7 @@ fn main() {
     let xyz: (f64, f64, f64) = (0.1, 0.2, 0.3);
 
     println!("abc (f32)");
+    // 输出无前缀 16 进制
     println!("   0.1 + 0.2: {:x}", (abc.0 + abc.1).to_bits());
     println!("         0.3: {:x}", (abc.2).to_bits());
     println!();
@@ -156,11 +158,12 @@ fn main() {
 
 ## 序列
 
-> 仅可用于 数值 和 字符 类型
+> 仅可用于 i/u or char 类型
 
 ```rust
     for i in 1..5 {
         // => 1,2,3,4
+        // i32 has implemented Display Trait
         println!("{}", i);
     }
     for i in 1..=5 {
@@ -209,6 +212,8 @@ fn main() {
     println!("{}", y);
 }
 ```
+
+CHECK
 
 ## 字符类型
 
@@ -2260,6 +2265,19 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 ## 模块(Module)
 
+推荐使用 2018 版本的目录组织
+
+```txt
+.
+├── lib.rs
+├── foo.rs
+└── foo/
+    └── bar.rs
+    └── test.rs
+```
+
+以下为 2015 版本的目录组织
+
 > src/aico/mod.rs
 
 ```rust
@@ -2331,11 +2349,12 @@ pub fn call_test_fn() {
 
 ```rust
 // 使用自定义库函数(包名::函数名)
-use hello_world::call_test_fn;
+// 使用 as 起别名
+use hello_world::call_test_fn as A;
 // 使用自定义结构体(包名::结构体名)
 use hello_world::TestStruct;
 fn main(){
-    call_test_fn();
+    A();
     let test_struct = TestStruct::new(String::from("test2"));
     println!("test_struct.name: {}", test_struct.get_name());
 }
@@ -2373,4 +2392,322 @@ use std::collections::*;
 3. pub(self) 在当前模块可见
 4. pub(super) 在父模块可见
 5. pub(in <path>) 表示在某个路径代表的模块中可见，其中 path 必须是父模块或者祖先模块
+```
+
+# 注释和文档
+
+## 代码注释
+
+```rust
+// this is a comment
+
+// or
+
+/*
+this
+is
+a
+comment
+*/
+```
+
+### 文档注释
+
+```txt
+1. 文档注释需要位于 lib 类型的包中，例如 src/lib.rs 中
+2. 文档注释可以使用 markdown语法！例如 # Examples 的标题，以及代码块高亮
+3. 被注释的对象需要使用 pub 对外可见，记住：文档注释是给用户看的，内部实现细节不应该被暴露出去
+
+```
+
+```rust
+/// this is a doc comment
+
+//or
+
+/**
+this
+is
+a
+doc
+comment
+*/
+
+```
+
+### 模块注释
+
+```rust
+//! this is module or crate comment
+
+//or
+
+/*!
+this
+is
+module
+or
+crate
+comment
+*/
+```
+
+## 编写单元测试
+
+````rust
+    /** `new` is used to generate `Test` object
+    # Example
+    ```rust
+    use lyy_test::Test;
+    let test = Test::new(1);
+    println!("{}", test.x());
+    ```
+    */
+````
+
+### 如果遇到单元测试中存在 panic
+
+````rust
+    /** `new` is used to generate `Test` object
+    # Example
+    ```rust,should_panic
+    panic("hahaha")
+    ```
+    */
+````
+
+## 文档特性
+
+### 文档中不显示单元测试代码
+
+````rust
+    /** `new` is used to generate `Test` object
+    # Example
+    ```rust
+    # // # 与后面的代码必须空一行
+    # use lyy_test::Test;
+    # let test = Test::new(1);
+    # println!("{}", test.x());
+    ```
+    */
+````
+
+### 文档注释跳转
+
+````rust
+    // 采用 [`xxx`] 的形式可以使得跳转
+    // 比如: xxx 可以为标准库中的 Option
+    // 比如: xxx 可以为标准库中的 std::future::Future
+    // 比如: xxx 可以为自定义库中的 crate::Test
+    // 比如: xxx 可以为自定义库中的 A
+    /** `new` is used to generate [`Test`] object
+    # Example
+    ```rust
+    # // # 与后面的代码必须空一行
+    # use lyy_test::Test;
+    # let test = Test::new(1);
+    # println!("{}", test.x());
+    ```
+    */
+
+````
+
+### 为文档定义搜索别名
+
+```rust
+#[doc(alias("test","x"))]
+pub struct Test {
+    x: i32,
+}
+```
+
+# 格式化输出
+
+## 三大金刚
+
+```txt
+1. print! 将格式化文本输出到标准输出，不带换行符
+2. println! 同上，但是在行的末尾添加换行符 (用于调试)
+3. format! 将格式化文本输出到 String 字符串 (用于生成格式化字符串)
+```
+
+```rust
+fn main() {
+    let a = 1;
+    println!("{}", a);
+
+    // String
+    let s = format!("{}", a);
+    println!("{}", s);
+}
+```
+
+## 两大护法
+
+```txt
+1. eprint! 将格式化文本输出到标准错误，不带换行符
+2. eprintln! 同上，但是在行的末尾添加换行符 (用于输出错误信息和进度信息)
+```
+
+## {} & {:?} & {:#?}
+
+```txt
+1. {} 适用于实现了 std::fmt::Display Trait 的类型，用来以更优雅、更友好的方式格式化文本，例如展示给用户
+2. {:?},{:#?} 适用于实现了 std::fmt::Debug Trait 的类型，用于调试场景
+```
+
+### Debug Trait
+
+```rust
+#[derive(Debug)]
+struct Test {
+    a: String;
+}
+```
+
+### Display Trait
+
+```txt
+1. 为自定义类型实现 Display 特征
+2. 使用 newtype 为外部类型实现 Display 特征, 比如 Vector 就是外部类型
+```
+
+> 有关[newtype](TODO)在这里
+
+```rust
+// 用元组包装就是 newtype
+struct Array(Vec<i32>);
+
+use std::fmt;
+impl fmt::Display for Array {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "数组是：{:?}", self.0)
+    }
+}
+fn main() {
+    let arr = Array(vec![1, 2, 3]);
+    println!("{}", arr);
+}
+```
+
+## 格式化输出
+
+### 小数点保留
+
+```rust
+fn main() {
+    let v = 3.1415926;
+}
+fn main() {
+    let v = 3.1415926;
+    // 保留两位小数 Display => 3.14
+    println!("{:.2}", v);
+    // 保留两位小数 Debug => 3.14
+    println!("{:.2?}", v);
+    // 带符号保留小数点后两位 => +3.14
+    println!("{:+.2}", v);
+    // 不带小数 => 3
+    println!("{:.0}", v);
+    // 通过参数来设定精度 => 3.1416，相当于{:.4}
+    println!("{:.1$}", v, 4);
+
+    let s = "hi我是Sunface孙飞";
+    // 保留字符串前三个字符 => hi我
+    println!("{:.3}", s);
+    // {:.*}接收两个参数，第一个是精度或字符数，第二个是被格式化的值 => Hello abc!
+    println!("Hello {:.*}!", 3, "abcdefg");
+}
+```
+
+### 填充
+
+```rust
+fn main() {
+    // 宽度是5 => Hello     5!
+    // 默认右对齐
+    //{:[什么符号][用什么填充][对齐方式(< | ^ | >)][宽度是多少][?(表示Debug Trait)]}
+    println!("Hello {:5}!", 5);
+    // 显式的输出正号 => Hello +5!
+    println!("Hello {:+}!", 5);
+    // 宽度5，使用0进行填充 => Hello 00005!
+    println!("Hello {:05}!", 5);
+    // 负号也要占用一位宽度 => Hello -0005!
+    println!("Hello {:&<5}!", -5);
+}
+
+```
+
+### 进制
+
+```txt
+1. #b, 二进制
+2. #o, 八进制
+3. #x, 小写十六进制
+4. #X, 大写十六进制
+5. x, 不带前缀的小写十六进制
+```
+
+```rust
+fn main() {
+    // 二进制 => 0b11011!
+    // 默认右对齐
+    // {:#[用什么填充][宽度是多少][什么进制]}
+    println!("{:#b}!", 27);
+    // 八进制 => 0o33!
+    println!("{:#o}!", 27);
+    // 十进制 => 27!
+    println!("{}!", 27);
+    // 小写十六进制 => 0x1b!
+    println!("{:#x}!", 27);
+    // 大写十六进制 => 0x1B!
+    println!("{:#X}!", 27);
+
+    // 不带前缀的十六进制 => 1b!
+    println!("{:x}!", 27);
+
+    // 使用0填充二进制，宽度为10 => 0b00011011!
+    println!("{:#010b}!", 27);
+}
+```
+
+### 指数
+
+```rust
+fn main() {
+    println!("{:2e}", 1000000000); // => 1e9
+    println!("{:2E}", 1000000000); // => 1E9
+}
+```
+
+### 指针地址
+
+```rust
+    let v= vec![1, 2, 3];
+    println!("{:p}", v.as_ptr()) // => 0x600002324050
+```
+
+### 转义{}
+
+```rust
+fn main() {
+    // {使用{转义，}使用} => Hello {}
+    // 必须同时转义
+    println!("Hello {{}}");
+
+    // 下面代码会报错，因为占位符{}只有一个右括号}，左括号被转义成字符串的内容
+    // println!("{{ Hello }");
+}
+```
+
+## 格式化字符串时捕获环境中的值
+
+```rust
+#![allow(unused)]
+fn main() {
+let (width, precision) = get_format();
+for (name, score) in get_scores() {
+  // width$ 表示这是格式化参数
+  println!("{name}: {score:width$.precision$}");
+}
+}
 ```
