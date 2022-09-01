@@ -4,6 +4,8 @@
 | ---------- | ----------------------- |
 | num        | 处理复数等问题          |
 | utf8_slice | 处理 UTF-8 字符串等问题 |
+| ahash      | 高性能哈希函数库        |
+| rand       | 随机数生成              |
 
 # 基础语法
 
@@ -1536,8 +1538,7 @@ fn main() {
 ## 调用方法需要引入 Trait
 
 ```rust
-// TODO
-// 不解
+// u16 实现了 TryInto Trait, 但如果需要使用 TryInto Trait 中的方法，需要 use std::convert::TryInto
 use std::convert::TryInto;
 
 fn main() {
@@ -1551,6 +1552,10 @@ fn main() {
 ```
 
 ## 为自定义类型实现 + 操作
+
+> 相当于就是运算符重载
+
+> 只有 std::ops 中的 Trait 才支持重载
 
 ```rust
 use std::ops::Add;
@@ -1644,4 +1649,728 @@ fn main() {
   println!("{}", f6);
   println!("{:#?}", f6);
 }
+```
+
+## Trait 对象
+
+```rust
+#![allow(unused)]
+pub trait Draw {
+    fn draw(&self);
+}
+
+// 相当于是基类
+pub struct Screen {
+    // Box<T> 是智能指针
+    // Box<dyn Draw> 是 Draw Trait 对象
+    // Trait 对象，需要在运行时从 vtable 动态查找需要调用的方法
+    // Box<dyn Draw> 底层存放了指向一个实现了Draw Trait的实例的指针 和 指向所有实现了 Draw Trait的实例的 Draw Trait 方法的数组指针
+    pub components: Vec<Box<dyn Draw>>,
+}
+
+impl Screen {
+    pub fn run(&self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}
+
+struct Button {
+    pub width: u32,
+    pub height: u32,
+    pub label: String,
+}
+
+impl Draw for Button {
+    fn draw(&self) {
+        println!("Drawing button with width: {} and height: {}", self.width, self.height);
+    }
+}
+
+struct SelectBox {
+    pub width: u32,
+    pub height: u32,
+    pub options: Vec<String>,
+}
+
+impl Draw for SelectBox {
+    fn draw(&self) {
+        println!("Drawing select box with width: {} and height: {}", self.width, self.height);
+    }
+}
+
+fn main() {
+    let screen = Screen {
+        components: vec![
+            // 使用 Box::new() 将 Button 实例包装成一个 Box<dyn Draw> 对象
+            Box::new(SelectBox {
+                width: 75,
+                height: 10,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("Maybe"),
+                    String::from("No"),
+                ],
+            }),
+            // 使用 Box::new() 将 任何实现了 Draw Trait 的实例包装成一个 Box<dyn Draw> 对象
+            Box::new(Button {
+                width: 50,
+                height: 10,
+                label: String::from("OK"),
+            }),
+        ],
+    };
+
+    // 多态运行
+    screen.run();
+}
+```
+
+### self 与 Self 的区别
+
+```rust
+#![allow(unused)
+trait Draw {
+    fn draw(&self) -> Self;
+}
+
+#[derive(Clone)]
+struct Button;
+impl Draw for Button {
+    // self 和 Self 的区别:
+    // self 指代的就是当前的实例对象
+    // Self 则指代的是 Button 类型
+    fn draw(&self) -> Self {
+        return self.clone()
+    }
+}
+
+fn main() {
+    let button = Button;
+    let newb = button.draw();
+}
+```
+
+### Trait 对象的限制
+
+> 只有对象安全的 Trait 才能拥有 Trait 对象
+
+```txt
+1. Trait 方法的返回类型不能是 Self
+2. Trait 方法没有任何泛型参数
+```
+
+## 深入了解 Trait
+
+TODO
+
+# 集合类型
+
+## Vector
+
+```rust
+#![allow(unused)]
+fn main(){
+    // 创建 capacity 为 10 的 Vector, T 根据上下文进行推导
+    let mut v1 = Vec::with_capacity(10);
+    v1.push(1); // 需要使 v1 为 mut, 才能 push
+    println!("{:?}", v1.capacity());     // => 10
+    println!("{:?}", v1.len());     // => 1
+    // 创建 Vector，默认初始化为空, T 手动指定
+    let v2: Vec<i32> = Vec::new();
+    println!("{:?}", v2.capacity());     // => 0
+    println!("{:?}", v2.len());     // => 0
+    // 创建具有初始化值的 Vector
+    let mut v3 = vec![1, 2, 3,4,5,6,7,8,9];
+    println!("{:?}", v3.capacity());     // => 9
+    println!("{:?}", v3.len());     // => 9
+    let third = &v3[2]; // 通过 index 访问, 越界会报错
+    // 出错： third 为不可变借用，v3 为可变借用，当 v3 push 之后可能会由于 capacity 不足重新申请一块内存，进而引发 third 指向无效内存地址的风险
+    // v3.push(10); // 需要使 v3 为 mut, 才能 push
+    println!("{:?}", third);     // => 3
+    let third = v3.get(100); // 通过下表访问, 越界返回 None
+    match third {
+        Some(third) => println!("{:?}", third),
+        None => println!("None"), // => None
+    }
+    // 迭代访问 Vector
+    for i in &v3 {
+        println!("{:?}", i); // 1, 2, 3, 4, 5, 6, 7, 8, 9
+    }
+    // Vector 的元素必需类型相同, 但可以通过使用 enum 和 Trait 对象来实现不同类型元素的存储
+    // 在介绍 enum 和 Trait 的时候已实现
+}
+```
+
+## HashMap
+
+> HashMap 符合所有权原则
+
+```txt
+1. 若类型实现 Copy 特征，该类型会被复制进 HashMap，因此无所谓所有权
+2. 若没实现 Copy 特征，所有权将被转移给 HashMap 中
+```
+
+> 一个类型能否作为 Key 的关键就是是否能进行相等比较，或者说该类型是否实现了 std::cmp::Eq Trait
+
+### 新建
+
+```rust
+#![allow(unused)]
+fn main() {
+    use std::collections::HashMap;
+    // Create a new HashMap with capacity 10
+    let mut map1: HashMap<String, i32> = HashMap::with_capacity(10);
+    map1.insert(String::from("first data"), 1);
+    // Create a new HashMap with capacity 0
+    let mut map = HashMap::new();
+    map.insert("a", 1);
+    let teams_list = vec![
+        ("中国队".to_string(), 100),
+        ("美国队".to_string(), 10),
+        ("日本队".to_string(), 50),
+    ];
+
+    // 将 Vector 转换为 Interator 并调用 collect 方法转换为 集合类型
+    // 由于 collect 方法支持转换成多种集合类型，因为需要指定转换的类型为 HashMap<_,_>，其中 _ 为占位符,表示编译器自动推断类型
+    let teams_map: HashMap<_,_> = teams_list.into_iter().collect();
+
+    println!("{:?}",teams_map)
+}
+```
+
+### 更新
+
+```rust
+fn main() {
+    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert("Blue", 10);
+
+    // 覆盖已有的值
+    let old = scores.insert("Blue", 20);
+    assert_eq!(old, Some(10));
+
+    // 查询新插入的值
+    let new = scores.get("Blue");
+    assert_eq!(new, Some(&20));
+
+    // 查询Yellow对应的值，若不存在则插入新值
+    let v = scores.entry("Yellow").or_insert(5);
+    assert_eq!(*v, 5); // 不存在，插入5
+
+    // 查询Yellow对应的值，若不存在则插入新值
+    let v = scores.entry("Yellow").or_insert(50);
+    assert_eq!(*v, 5); // 已经存在，因此50没有插入
+}
+```
+
+### 在已有值的基础上更新
+
+```rust
+// 统计文本单词数量
+#![allow(unused)]
+fn main() {
+use std::collections::HashMap;
+
+let text = "hello world wonderful world";
+
+let mut map = HashMap::new();
+// 根据空格来切分字符串(英文单词都是通过空格切分)
+for word in text.split_whitespace() {
+    // &mut V
+    let count = map.entry(word).or_insert(0);
+    *count += 1;
+}
+
+println!("{:?}", map);
+}
+```
+
+# 类型转换
+
+## as 转换
+
+> as 转换不具有传递性 就算 e as U1 as U2 是合法的，也不能说明 e as U2 是合法的
+
+```rust
+#![allow(unused)]
+fn main() {
+    // 基本转换
+    let a: i32 = 10;
+    let b: u16 = 100;
+
+    // u16 -> i32
+    if a < (b as i32) {
+        println!("Ten is less than one hundred.");
+    }
+
+    // 类型最值获取
+    let i16_min = i16::MIN;
+    let i16_max = i16::MAX;
+    println!("i16_min: {}, i16_max: {}", i16_min, i16_max);
+
+    // 字符转换
+    let c = 'a' as u8;
+    println!("c: {}", c);
+
+    // 内存地址转换
+    let mut values: [i32; 2] = [1, 2];
+    let p1: *mut i32 = values.as_mut_ptr();
+    let first_address = p1 as usize; // 将p1内存地址转换为一个整数
+    println!("first_address: {}", first_address);
+    let second_address = first_address + 4; // 4 == std::mem::size_of::<i32>()，i32类型占用4个字节，因此将内存地址 + 4
+    println!("second_address: {}", second_address);
+    let p2 = second_address as *mut i32; // 访问该地址指向的下一个整数p2
+    unsafe {
+        *p2 += 1;
+    }
+    assert_eq!(values[1], 3);
+}
+```
+
+## TryInto 转换
+
+> 使用 TryInto Trait 中的 try_into() 进行大范围转小范围转换时，会引起错误: 类型范围超出的转换是不被允许的
+
+```rust
+use std::convert::TryInto;
+
+fn main() {
+   let a: u8 = 10;
+   let b: u16 = 1500;
+
+   // 使用 TryInto Trait 中的 try_into() 将 u16 -> u8 时，会引起错误: 类型范围超出的转换是不被允许的
+   // let b_: u8 = b.try_into().unwrap();
+
+   //这样使用
+   let b_ = match b.try_into().ok() {
+      Some(b_) => b_,
+      None => 0,
+   };
+
+   //或这样使用
+   let c_ = match b.try_into() {
+      Ok(c_) => c_,
+      Err(_) => 0,
+   };
+
+   if a > b_ {
+     println!("Ten is less than one hundred.");
+   }
+   if a > c_ {
+     println!("Ten is less than one hundred.");
+   }
+}
+```
+
+## 强制类型转换
+
+TODO
+
+## 点操作符的黑暗
+
+TODO
+
+## 变形记
+
+TODO
+
+# 返回值和错误处理
+
+## panic! 与不可恢复错误
+
+```txt
+panic! 宏,程序会打印出一个错误信息，展开报错点往前的函数调用堆栈，最后退出程序
+不可恢复的错误(梳理清楚当前场景的错误类型非常重要),一旦发生，只需让程序崩溃即可
+```
+
+## backtrace 栈展开
+
+**缓冲区溢出**
+
+```txt
+如果有过 C 语言的经验，即使你越界了，问题不大，我依然尝试去访问
+至于这个值是不是你想要的（100 号内存地址也有可能有值，只不过是其它变量或者程序的！）
+抱歉，不归我管，我只负责取，你要负责管理好自己的索引访问范围
+```
+
+```sh
+# debug
+RUST_BACKTRACE=1 cargo run | less
+# release
+RUST_BACKTRACE=1 cargo run --release | less
+```
+
+## panic 时的两种终止方式
+
+```txt
+1. 栈展开
+2. 直接终止
+```
+
+> 配置 Cargo.toml, 使得在 release 下 panic 时直接终止
+
+```txt
+[profile.release]
+panic = 'abort'
+```
+
+## 何时使用
+
+```txt
+1. 你确切的知道你的程序是正确时，可以使用 panic, 因为不太可能 panic
+2. 可预期的错误则可处理，则不需要 panic
+3. 后续代码的运行会受到显著影响时需要对错误 panic
+
+```
+
+```rust
+#![allow(unused)]
+fn main() {
+    use std::net::IpAddr;
+    // unwrap() 成功则返回值，失败则 panic
+    // 符合第一条，panic 不太可能发生
+    let home: IpAddr = "127.0.0.1".parse().unwrap();
+    // expect(消息) 成功则返回值不打印消息，失败则 panic并打印消息
+    let f = File::open("/dev/null").expect("Failed to open hello.txt");
+    println!("{:?}", f);
+}
+```
+
+## 线程 panic
+
+```txt
+如果是 main 线程，则程序会终止，如果是其它子线程，该线程会终止，但是不会影响 main 线程
+```
+
+## panic 原理
+
+> 当调用 panic! 宏时，它会:
+
+```txt
+1. 格式化 panic 信息，然后使用该信息作为参数，调用 std::panic::panic_any() 函数
+2. panic_any 会检查应用是否使用了 panic hook，如果使用了，该 hook 函数就会被调用（hook 是一个钩子函数，是外部代码设置的，用于在 panic 触发时，执行外部代码所需的功能）
+3. 当 hook 函数返回后，当前的线程就开始进行栈展开：从 panic_any 开始，如果寄存器或者栈因为某些原因信息错乱了，那很可能该展开会发生异常，最终线程会直接停止，展开也无法继续进行
+4. 展开的过程是一帧一帧的去回溯整个栈，每个帧的数据都会随之被丢弃，但是在展开过程中，你可能会遇到被用户标记为 catching 的帧（通过 std::panic::catch_unwind() 函数标记），此时用户提供的 catch 函数会被调用，展开也随之停止：当然，如果 catch 选择在内部调用 std::panic::resume_unwind() 函数，则展开还会继续。
+```
+
+# Result<T,E>
+
+> 一种可处理正确值和错误的枚举
+
+```rust
+#![allow(unused)]
+// 文件处理标准库
+use std::fs::File;
+// 错误类型标准库
+use std::io::ErrorKind;
+
+fn main() {
+    let f = File::open("hello.txt");
+
+    let f = match f {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file: {:?}", e),
+            },
+            other_error => panic!("Problem opening the file: {:?}", other_error),
+        },
+    };
+}
+```
+
+> 高级[错误处理](TODO)请看这里
+
+## 将错误向上传播(?)
+
+> 好处：顶级处理错误 | 将错误封装发送给用户
+
+### 复杂版
+
+```rust
+#![allow(unused)]
+fn main() {
+    use std::fs::File;
+    use std::io::{self, Read};
+
+    fn read_username_from_file() -> Result<String, io::Error> {
+        // 打开文件，f是`Result<文件句柄,io::Error>`
+        let f = File::open("hello.txt");
+
+        let mut f = match f {
+            // 打开文件成功，将file句柄赋值给f
+            Ok(file) => file,
+            // 打开文件失败，将错误返回(向上传播)
+            Err(e) => return Err(e),
+        };
+        // 创建动态字符串s
+        let mut s = String::new();
+        // 从f文件句柄读取数据并写入s中
+        match f.read_to_string(&mut s) {
+            // 读取成功，返回Ok封装的字符串
+            Ok(_) => Ok(s),
+            // 将错误向上传播
+            Err(e) => Err(e),
+        }
+    }
+    let f = read_username_from_file().expect("Failed to read username");
+    println!("{}", f);
+}
+```
+
+### 简易版
+
+```rust
+#![allow(unused)]
+fn main() {
+    use std::error;
+    use std::fs;
+    use std::io;
+    // 因为 read_to_string() 在 Read Trait 中实现，所以需要引入
+    use std::io::Read;
+
+    //: 简易版 60 分
+    // ? 用于将错误向上传播
+    // ? 的自定义使用：需要为自定义的 Error 实现 From<T> trait，并且实现 Display trait
+    fn read_username_from_file() -> Result<String, io::Error> {
+        // 如果结果是 Ok(T)，则把 T 赋值给 f，如果结果是 Err(E)，则 return 该错误(通用)
+        let mut f = fs::File::open("hello.txt")?;
+        let mut s = String::new();
+        f.read_to_string(&mut s)?;
+        Ok(s)
+    }
+
+    //: 简易版 80 分
+    // 因为 impl error::Error for Error {}, 所以可以返回 error::Error 的 Trait 对象,这样只要实现了 error::Error 的类型都可以返回(打破局限性)
+    fn read_username_from_file2() -> Result<String, Box<dyn error::Error>> {
+        let mut s = String::new();
+        // ? 还能实现链式调用，File::open 遇到错误就返回，没有错误就将 Ok 中的值取出来用于下一个方法调用
+        fs::File::open("hello.txt")?.read_to_string(&mut s)?;
+        Ok(s)
+    }
+
+    //: 简易版 100 分
+    fn read_username_from_file3() -> Result<String, io::Error> {
+        // 系统自带的方法，可以直接读取文件内容
+        // 本质和上面一样
+        fs::read_to_string("hello.txt")
+    }
+}
+```
+
+## ? 用于 Option<T>
+
+```rust
+#![allow(unused)]
+fn main() {
+    fn get(s: &[i32]) -> Option<&i32> {
+        // 是这么用，但是多次一举
+        let v = s.get(0)?;
+        Some(v)
+    }
+
+    fn get2(s: &[i32]) -> Option<&i32> {
+        // 直接返回即可
+        s.get(0)
+    }
+
+    // ? 在 Option<T> 多用于链式调用
+    fn last_char_of_first_line(text: &str) -> Option<char> {
+        text.lines().next()?.chars().last()
+    }
+}
+```
+
+## 带有返回值的 main
+
+```rust
+#![allow(unused)]
+use std::error::Error;
+use std::fs::File;
+
+// std::error::Error is a trait that all standard errors implement.
+fn main() -> Result<(), Box<dyn Error>> {
+    let f = File::open("hello.txt")?;
+
+    Ok(())
+}
+```
+
+# 包和模块
+
+```txt
+1. 项目(Package)：可以用来构建、测试和分享包
+2. 工作空间(WorkSpace)：对于大型项目，可以进一步将多个包联合在一起，组织成工作空间
+3. 包(Crate)：一个由多个模块组成的树形结构，可以作为三方库进行分发，也可以生成可执行文件进行运行
+4. 模块(Module)：可以一个文件多个模块，也可以一个文件一个模块，模块可以被认为是真实项目中的代码组织单元
+```
+
+## 包(Crate)
+
+```txt
+1. 是一个独立的可编译单元，它编译后会生成一个可执行文件或者一个库
+2. 常作为第三方库使用: use rand
+```
+
+## 项目(Package)
+
+> 包含有独立的 Cargo.toml 文件，以及因为功能性被组织在一起的一个或多个包
+
+### 二进制 Package
+
+> src/main.rs 是二进制包的根文件, 所有的代码执行都从该文件中的 fn main() 函数开始
+
+### 库 Package
+
+> 只能作为三方库被其它项目引用，而不能独立运行
+> src/lib.rs 是库包的根文件(唯一)
+
+## 目录结构
+
+```txt
+.
+├── Cargo.toml
+├── Cargo.lock
+├── src
+│   ├── main.rs
+│   ├── lib.rs
+│   └── bin
+│       └── main1.rs
+│       └── main2.rs
+├── tests
+│   └── some_integration_tests.rs
+├── benches
+│   └── simple_bench.rs
+└── examples
+    └── simple_example.rs
+
+1. 唯一库包：src/lib.rs
+2. 默认二进制包：src/main.rs，编译后生成的可执行文件与 Package 同名
+3. 其余二进制包：src/bin/main1.rs 和 src/bin/main2.rs，它们会分别生成一个文件同名的二进制可执行文件
+4. 集成测试文件：tests 目录下
+5. 基准性能测试 benchmark 文件：benches 目录下
+6. 项目示例：examples 目录下
+```
+
+## 模块(Module)
+
+> src/aico/mod.rs
+
+```rust
+#![allow(unused)]
+// 嵌套 mod
+//public
+pub mod test_mod {
+    // public
+    pub mod v1 {
+        // pravate
+        fn test_fn() {
+            println!("v1 test_fn");
+        }
+        // public
+        pub fn test_fn_with_param(param: i32) {
+            // 同一 mod 中可以直接调用
+            test_fn();
+            println!("v2 test_fn_with_param: {}", param);
+        }
+    }
+
+    // private
+    mod v2 {
+        // private
+        fn test_fn() {
+            println!("v1 test_fn");
+        }
+        // public
+        pub fn test_fn_with_param(param: i32) {
+            test_fn();
+            println!("v2 test_fn_with_param: {}", param);
+        }
+    }
+}
+
+pub struct TestStruct {
+    name: String,
+}
+
+impl TestStruct {
+    pub fn new(name: String) -> TestStruct {
+        TestStruct { name }
+    }
+
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+}
+```
+
+> src/lib.rs
+
+```rust
+// 声明 mod
+// 当外部的模块项 aico 被引入到当前模块中时，它的可见性自动被设置为私有的, 需要手动设置 pub
+pub mod aico;
+
+// 引入 mod 中的数据到当前域
+pub use crate::aico::{test_mod, TestStruct};
+// 需要外部访问，设为 pub
+pub fn call_test_fn() {
+    test_mod::v1::test_fn_with_param(1);
+    // 无法访问 mod v2, 因为其为 private
+    // crate::test_mod::v2::test_fn_with_param(2);
+}
+```
+
+> src/main.rs
+
+```rust
+// 使用自定义库函数(包名::函数名)
+use hello_world::call_test_fn;
+// 使用自定义结构体(包名::结构体名)
+use hello_world::TestStruct;
+fn main(){
+    call_test_fn();
+    let test_struct = TestStruct::new(String::from("test2"));
+    println!("test_struct.name: {}", test_struct.get_name());
+}
+```
+
+### struct & enum 的可见性
+
+```txt
+1. 将 struct 设置为 pub，但它的所有字段依然是私有的
+2. 将 enum 设置为 pub，它的所有字段也将对外可见
+```
+
+### 引入模块的 self 形式
+
+```rust
+use std::io;
+use std::io::Write;
+
+// 等价于
+use std::io::{self, Write};
+```
+
+### 所有引入 \*
+
+```rust
+// 写项目不推荐使用
+use std::collections::*;
+```
+
+### 限制性语法
+
+```txt
+1. pub 意味着可见性无任何限制
+2. pub(crate) 表示在当前包可见
+3. pub(self) 在当前模块可见
+4. pub(super) 在父模块可见
+5. pub(in <path>) 表示在某个路径代表的模块中可见，其中 path 必须是父模块或者祖先模块
 ```
