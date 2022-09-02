@@ -647,7 +647,7 @@ fn main() {
 
 ### 结构体数据所有权
 
-> 当一个结构体中的数据是借用时，需要引入[生命周期](TODO)
+> 当一个结构体中的数据是借用时，需要引入[生命周期](./rust_advanced.md#lifetime)
 
 ```rust
 struct User {
