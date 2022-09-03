@@ -2572,7 +2572,7 @@ struct Test {
 2. 使用 newtype 为外部类型实现 Display 特征, 比如 Vector 就是外部类型
 ```
 
-> 有关[newtype](TODO)在这里
+> 有关[newtype](./type.md#newtype)在这里
 
 ```rust
 // 用元组包装就是 newtype

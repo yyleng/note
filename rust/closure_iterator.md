@@ -254,3 +254,155 @@ fn main() {
 ```
 
 # 迭代器 (Iterator)
+
+> iterator 是惰性的，意味着如果你不使用它，那么它将不会发生任何事
+
+```rust
+fn main() {
+    let arr = [1, 2, 3, 4, 5];
+    // 创建迭代器不会有任何额外的性能损耗
+    let iterator = arr.iter();
+    // 只有使用时才会进行计算
+    for i in iterator {
+        println!("{}", i);
+    }
+}
+```
+
+## Iterator 组成
+
+```txt
+以 Vector 为例:
+1. Vector 实现了 IntoIter Trait.
+2. 而 IntoTrait 实现了 Iterator Trait.
+
+隐式的:
+实现了 Iterator Trait 的类型也实现了 IntoIter Trait
+
+1. 而 IntoIter Trait 强调的是某一个类型如果实现了该 Trait，它可以通过
+   into_iter(), iter() 等方法变成一个迭代器,进而调用 Iterator Trait
+   中的方法，自定义时，这是可选。
+2. Iterator 是迭代器的 Trait, 只有实现了 Iterator Trait 才能被称为迭代器,
+   才能调用 next()等 方法,自定义时，这是关键
+```
+
+## 转换为迭代器的方法
+
+```txt
+这些转换为迭代器的方法是 IntoIter Trait 中的方法
+1. into_iter() 会夺走所有权
+2. iter() 是不可变借用
+3. iter_mut() 是可变借用
+
+调用 next() 返回的值:(next() 是 Iterator Trait 中的方法)
+1. into_iter() 方法实现的迭代器，调用 next 方法返回的类型是 Some(T)
+2. iter() 方法实现的迭代器，调用 next 方法返回的类型是 Some(&T)
+3. iter_mut() 方法实现的迭代器，调用 next 方法返回的类型是 Some(&mut T)
+```
+
+```rust
+fn main() {
+    let values = vec![1, 2, 3];
+
+    // into_iter() 会将 vec 转换为迭代器, 并且 vec 所有权转移给迭代器
+    for v in values.into_iter() {
+        println!("{}", v)
+    }
+    // 报错
+    // println!("{:?}",values);
+
+    // into_iter() 会将 vec 转换为迭代器
+    let values = vec![1, 2, 3];
+    let _values_iter = values.iter();
+
+    // 不会报错，因为 values_iter 只是借用了 values 中的元素
+    println!("{:?}", values);
+
+    let mut values = vec![1, 2, 3];
+    // 对 values 中的元素进行可变借用
+    let mut values_iter_mut = values.iter_mut();
+
+    // 取出第一个元素，并修改为0
+    if let Some(v) = values_iter_mut.next() {
+        *v = 0;
+    }
+
+    // 输出[0, 2, 3]
+    println!("{:?}", values);
+}
+```
+
+## Iterator Trait 方法
+
+### 迭代者
+
+> 如果某个方式会返回一个新的迭代器，那么该方法就是迭代者方法
+> 比如: map(), filter(), zip(), 与消费者不同，迭代者是惰性的，
+> 意味着需要一个消费者方法来收尾，最终将迭代器转换成一个具体的值
+
+### 消费者
+
+> 如果某个方式会消耗迭代器上的元素，那么该方法就是消费者方法
+> 比如: next(), collect(), sum()
+
+```rust
+fn main() {
+    let values = vec![1, 2, 3];
+    // 这里还使用了 closure 作为 迭代者方法的参数
+    let a: Vec<_> = values.iter().map(|x| x + 1).collect();
+    println!("{:?}", a);
+}
+```
+
+```rust
+fn main() {
+    let values = vec![1, 2, 3];
+    let keys = vec!["1","2","3"];
+    // 合并转换成 HashMap
+    let a: Vec<(_,_)> = keys.iter().zip(values.iter()).collect();
+    println!("{:?}", a);
+}
+```
+
+## 自定义 Iterator
+
+```rust
+struct Count {
+    value: i32,
+}
+
+impl Iterator for Count {
+    // 关联类型
+    type Item = i32;
+
+    // next() 是迭代器的核心方法, 其他方法都是基于它实现的
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.value < 5 {
+            self.value += 1;
+            Some(self.value)
+        } else {
+            None
+        }
+    }
+}
+
+impl Count {
+    fn new() -> Count {
+        Count { value: 0 }
+    }
+}
+
+fn main() {
+    let a = Count::new();
+    let sum: i32 = a
+        // zip() 合并, skip(1) 跳过前 1 个元素
+        .zip(Count::new().skip(1))
+        .map(|(a, b)| a * b)
+        // 过滤
+        .filter(|x| x % 3 == 0)
+        // 求和
+        .sum();
+
+    println!("sum = {}", sum);
+}
+```
