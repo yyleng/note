@@ -4,6 +4,7 @@
 1. 智能指针, 主要就在于它实现了 Deref Trait 和 Drop Trait
 2. Deref Trait 可以让智能指针像引用那样工作，这样你就可以写出同时支持智能指针和引用的代码，例如 *T
 3. Drop Trait 允许智能指针超出作用域后自动执行的代码，例如做一些数据清除等收尾工作
+4: String 和 Vector 都是智能指针, 它们在栈中的结构体中不仅仅包含了指向底层数据的指针，还包含了当前长度、最大长度等信息
 ```
 
 ## Box 堆对象分配
@@ -539,5 +540,96 @@ fn main() {
             Err(_) => println!("Error"),
         }
     }
+}
+```
+
+## 内部可变性
+
+```txt
+1. Cell<T> 和 RefCell<T> 可以在拥有不可变引用的同时允许修改目标数据
+2. Cell<T> 适用于 T 实现 Copy Trait 的情况
+3. 与 Cell<T> 用于可 Copy Trait 的值不同，RefCell<T> 用于引用
+4. RefCell<T> 只是将借用规则从编译期推迟到程序运行期，并不能帮你绕过这个规则
+5. RefCell<T> 适用于编译期误报或者一个引用被在多处代码使用、修改以至于难于管理借用关系时
+6. 使用 RefCell<T> 时，违背借用规则会导致运行期的 panic
+7. RefCell<T> 存在性能损失, 而 Cel<T> 不存在
+8: Cell<T> 和 RefCell<T> 通过它们可以实现 struct 部分字段可变，而不用将整个 struct 设置为 mutable
+9: use std::cell::{Cell, RefCell}
+```
+
+### Cell
+
+```rust
+use std::cell::Cell;
+
+fn main() {
+    // &str 实现了 Copy trait
+    // String 没有实现 Copy trait
+    let c = Cell::new("abc");
+    let y = c.get();
+    // 通过 unsafe 代码块，可以修改不可变引用的值
+    c.set("def");
+    println!("{},{}", y , c.get());
+}
+```
+
+### RefCell
+
+```rust
+use std::cell::RefCell;
+
+fn main() {
+    let str = RefCell::new(String::from("Hello, world!"));
+    // 依旧无法打破借用规则, 会报错
+    // let a = str.borrow();
+    // 对不可变数据进行可变借用, 进而修改数据
+    str.borrow_mut().push_str("Hello, world!");
+    println!("{:?}", str.borrow());
+}
+```
+
+#### 规则
+
+| Rust 规则                            | 智能指针带来的额外规则                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------------------ |
+| 一个数据只有一个所有者               | Rc<T>/Arc<T> 让一个数据可以拥有多个所有者                                            |
+| 要么多个不可变借用，要么一个可变借用 | RefCell 实现编译期可变、不可变引用共存, 但是如同两者依然同时存在, 在运行期时会 panic |
+| 违背规则导致编译错误                 | 违背规则导致运行时 panic                                                             |
+
+### 如何选择
+
+```txt
+首选 Cell<T>, 只有类型没有实现 Copy Trait 时, 才去选择 RefCell<T>
+```
+
+### 十分有用的关联函数
+
+```txt
+1. Cell::from_mut() 方法将 &mut T 转为 &Cell<T>
+2. Cell::as_slice_of_cells() 方法将 &Cell<[T]> 转为 &[Cell<T>]
+```
+
+```rust
+#![allow(unused)]
+fn main() {
+use std::cell::Cell;
+
+fn retain_even(nums: &mut Vec<i32>) {
+    // 采用這種方式可以解決借用衝突
+    // &mut [i32] => &Cell<[i32]>
+    // &Cell<[i32]> => &[Cell<i32>]
+    let slice: &[Cell<i32>] = Cell::from_mut(&mut nums[..])
+        .as_slice_of_cells();
+
+    let mut i = 0;
+    // get() 获取不可变借用
+    for num in slice.iter().filter(|num| is_even(num.get())) {
+        // set() 通过不可变借用修改数据值
+        slice[i].set(num.get());
+        i += 1;
+    }
+
+    nums.truncate(i);
+}
 }
 ```
