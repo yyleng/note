@@ -96,3 +96,143 @@ fn main() {
 ```
 
 ---
+
+### 线程屏障
+
+> 用于控制让多个线程都执行到某个点后，才继续一起往后执行
+
+```rust
+use std::sync::{Arc, Barrier};
+use std::thread;
+
+fn main() {
+    let mut handles = Vec::with_capacity(6);
+    // Create a barrier that can block a total of 6 threads.
+    let barrier = Arc::new(Barrier::new(6));
+
+    for _ in 0..6 {
+        let b = barrier.clone();
+        handles.push(thread::spawn(move|| {
+            println!("before wait");
+            b.wait();
+            println!("after wait");
+        }));
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+```
+
+### 条件变量和互斥锁
+
+```rust
+use std::sync::{Arc, Condvar, Mutex};
+use std::thread;
+
+fn main() {
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let pair2 = pair.clone();
+
+    thread::spawn(move || {
+        let (lock, cvar) = &*pair2;
+        let mut started = lock.lock().unwrap();
+        println!("changing started");
+        *started = true;
+        cvar.notify_one();
+    });
+
+    let (lock, cvar) = &*pair;
+    let mut started = lock.lock().unwrap();
+    while !*started {
+        started = cvar.wait(started).unwrap();
+    }
+
+    println!("started changed");
+}
+```
+
+### 多线程只调用一次函数
+
+```rust
+use std::thread;
+use std::sync::Once;
+
+// 假设这就是全局配置
+static mut VAL: usize = 0;
+static INIT: Once = Once::new();
+
+fn main() {
+    // 这两个线程中的call_once closure 二选一
+    let handle1 = thread::spawn(move || {
+        INIT.call_once(|| {
+            unsafe {
+                VAL = 1;
+            }
+        });
+    });
+
+    let handle2 = thread::spawn(move || {
+        INIT.call_once(|| {
+            unsafe {
+                VAL = 2;
+            }
+        });
+    });
+
+    handle1.join().unwrap();
+    handle2.join().unwrap();
+
+    println!("{}", unsafe { VAL });
+}
+```
+
+### 加锁性能
+
+```rust
+use std::ops::Sub;
+use std::sync::{Mutex, Arc};
+use std::thread::{self, JoinHandle};
+use std::time::Instant;
+const N_TIMES: u64 = 10_000_000;
+const N_THREADS: usize = 10;
+
+fn add_n_times(n: u64, counter: Arc<Mutex<u64>>) -> JoinHandle<()> {
+    thread::spawn(move || {
+        // 控制线程加锁即可
+        let mut num = counter.lock().unwrap();
+        for _ in 0..n {
+        // 不应该在这里加锁，因为这样会导致每次都要加锁，这样会导致性能下降
+        // let mut num = counter.lock().unwrap();
+            *num += 1;
+        }
+    })
+}
+
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    // 用于计算时间
+    let s = Instant::now();
+    let mut threads = Vec::with_capacity(N_THREADS);
+    for _ in 0..N_THREADS {
+        threads.push(add_n_times(N_TIMES, counter.clone()))
+    }
+
+    for thread in threads {
+        thread.join().unwrap();
+    }
+    assert_eq!(N_TIMES * N_THREADS as u64, *counter.lock().unwrap());
+    // 获取时间差
+    println!("{:?}",Instant::now().sub(s));
+}
+```
+
+## 线程同步
+
+### 消息传递
+
+TODO
+
+###
