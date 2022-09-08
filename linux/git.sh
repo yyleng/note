@@ -15,6 +15,7 @@ glol
 #同步repo依赖
 git submodule sync
 git submodule update --init --progress
+git submodule add <url> <相对路径>
 #git-svn 并基
 gsr
 #git-svn 上传
