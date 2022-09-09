@@ -269,7 +269,77 @@ fn main() {
 > try_recv() 应运而生
 
 ```rust
+use std::sync::mpsc;
+use std::thread;
 
+fn main() {
+    let (producer, consumer) = mpsc::channel();
+
+    // 线程创建后需要初始化, 因此下面的 println! 会先行执行
+    // producer 所有权会被移动到线程中
+    thread::spawn(move || {
+        producer.send(1).unwrap();
+        // 发送数据后, tx 离开作用域, 会自动调用 Drop Trait 中的 drop() 方法
+        // 释放 producer
+    });
+
+    // 由于此时生产者还没有发送数据, 因此 => Err(Empty)
+    println!("{:?}", consumer.try_recv());
+    println!("{:?}", consumer.try_recv());
+    // 可能在这里可以成功接受数据 => 1
+    println!("{:?}", consumer.try_recv());
+    // 由于 producer 被 drop 了, 导致通道被关闭, 因此 => Err(Disconnected)
+    println!("{:?}", consumer.try_recv());
+
+}
+```
+
+**传输具有所有权的数据**
+
+> 取决于该数据类型是否实现了 Copy Trait,
+> 如果实现了, 会直接 Copy, 相当于调用 Clone Trait 中的 clone() 方法,
+> 否则就会移动所有权
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+#[derive(Debug, Clone, Copy)]
+struct Test {
+    a: i32,
+    b: i32,
+}
+
+fn main() {
+    let (producer, consumer) = mpsc::channel();
+
+    thread::spawn(move || {
+        let test = Test { a: 1, b: 2 };
+        //: 以 String 为例
+        // let message = String::from("this is a test message");
+        // 以 clone() 的方式将 message 发送到 channel 中
+        // 这样就不会移动 message 的所有权
+        // producer.send(message.clone()).unwrap();
+        // message 为 String 类型, 并未实现 Copy Trait
+        // println!("{:?}", message);
+
+        // 由于 Test 实现了 Copy trait，所以可以直接将 test 发送到 channel 中
+        // 此时直接 Copy, 不会移动所有权
+        producer.send(test).unwrap();
+        // 依旧可以使用 test
+        println!("{:?}", test);
+
+        // 发送数据后, producer 离开作用域, 会自动调用 Drop Trait 中的 drop() 方法
+        // 释放 producer
+
+        // message 在这里被 drop
+    });
+    let recv_message = consumer.recv().unwrap();
+
+    println!("{:?}", recv_message);
+
+    // recv_message 在这里被 drop
+}
 ```
 
 ###
