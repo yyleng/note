@@ -233,6 +233,43 @@ fn main() {
 
 ### 消息传递
 
-TODO
+> 以消息通道(channel)的形式进行消息传递, 对应标准库中的 std::sync::mpsc
+> mpsc 的含义是 multiple producer, signle consumer, 即多生产者, 单消费者
+
+#### 基本用法
+
+**单生产者, 单消费者**
+
+```rust
+use std::sync::mpsc;
+fn main() {
+    // 类型由编译器根据上下文推导, 一经确定就不可变
+    let (producer, consumer) = mpsc::channel();
+    // 也可以手动指定类型
+    // let (producer, consumer): (Sender<&str>, Receiver<&str>) = mpsc::channel();
+
+    producer.send("lyy yo yo yo!").expect("send failed");
+    // 错误, 类型已经被推导为 &str
+    // producer.send(1).expect("send failed");
+
+    // move 会将 consumer 的所有权转移给另一个线程
+    std::thread::spawn(move || {
+        // recv() 会阻塞当前线程, 直到接受到一条数据或者通道被关闭(所有生产者 drop)
+        let msg = consumer.recv().expect("recv failed");
+        println!("{}", msg);
+    })
+    .join()
+    .unwrap();
+}
+```
+
+**try_recv() 函数**
+
+> 消费者(consumer) 在调用 recv() 函数接受数据时会阻塞, 在某些场景下不可取, 因此
+> try_recv() 应运而生
+
+```rust
+
+```
 
 ###
