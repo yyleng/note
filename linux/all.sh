@@ -343,3 +343,12 @@ sudo usermod -aG docker $USER && newgrp docker
 TODO
 # watch image
 ffplay -pixel_format nv12 -f rawvideo  -video_size 500x376  -i  500x376.nv12
+
+#======== ssh config ==========
+# ~/.ssh/config
+Host 231
+    HostName 10.23.4.231
+    User garrick
+    Port 31415
+# usage
+ssh 231
