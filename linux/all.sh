@@ -301,6 +301,9 @@ podman pull <imagename>
 #===== tencent meeting ====
 alien -r TencentMeeting_0300000000_2.8.0.1_x86_64.publish.deb #将deb->rpm
 rpm2cpio wemeet-2.8.0.1-2.x86_64.rpm |cpio -ivmd #get rpm content
+vim /etc/gdm/custom.conf #add
+WaylandEnable=false
+DefaultSession=gnome-xorg.desktop
 
 #===== kitty ibus chinese input error =====
 GLFW_IM_MODULE=ibus kitty
@@ -323,6 +326,8 @@ rpm -qa *.rpm
 #===== cmake project jump in lsp ======
 #in main directory cmakelist.txt
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT ON)
+# set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 #build
 mkdir build && cd build
 cmake ..
@@ -352,3 +357,8 @@ Host 231
     Port 31415
 # usage
 ssh 231
+
+#======== grpc .h .cc ========
+protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/formats/:. --grpc_out=./build/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` common/protocol/messenger.proto
+## ph.h ph.cc
+protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/formats/:. --cpp_out=./build/ common/protocol/messenger.proto
