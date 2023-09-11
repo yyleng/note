@@ -1,0 +1,161 @@
+# 禁用结构体对齐
+# 允许魔鬼数字存在
+# 禁用尾返回类型
+# 禁用循环展开
+# 允许默认参数
+# 允许使用下标访问数组
+# 不限制标识符的长度
+
+Checks: "*,-hicpp*,-misc*,-cert*,-fuchsia*,-altera-struct-pack-align,-llvmlibc*,-cppcoreguidelines*,-readability-magic-numbers,-modernize-use-trailing-return-type,-altera-unroll-loops,-fuchsia-default-arguments-calls,-fuchsia-default-arguments-declarations,-altera-id-dependent-backward-branch,-readability-identifier-length"
+CheckOptions:
+  # 命名空间命名规范 for_example
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  # 内联命名空间命名规范 for_example
+  - key: readability-identifier-naming.InlineNamespaceCase
+    value: lower_case
+  # 函数命名规范 ForExample
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  # 全局函数命名规范 ForExample
+  - key: readability-identifier-naming.GlobalFunctionCase
+    value: CamelCase
+  # 抽象类命名规范 ForExample
+  - key: readability-identifier-naming.AbstractClassCase
+    value: CamelCase
+  # 类命名规范 ForExample
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  # 结构体命名规范 ForExample
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  # 类内静态常量命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.ClassConstantCase
+    value: UPPER_CASE
+  # 类内成员命名规范 for_example_
+  - key: readability-identifier-naming.ClassMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassMemberSuffix
+    value: _
+  # 类内方法命名规范 ForExample
+  - key: readability-identifier-naming.ClassMethodCase
+    value: CamelCase
+  # 常量命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+  # 全局常量命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  # 局部常量命名规范 for_example
+  - key: readability-identifier-naming.LocalConstantCase
+    value: lower_case
+  # 局部常量指针命名规范 for_example
+  - key: readability-identifier-naming.LocalConstantPointerCase
+    value: lower_case
+  # 局部指针命名规范 for_example
+  - key: readability-identifier-naming.LocalPointerCase
+    value: lower_case
+  # 局部变量命名规范 for_example
+  - key: readability-identifier-naming.LocalVariableCase
+    value: lower_case
+  # 类内常量命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.ConstantMemberCase
+    value: UPPER_CASE
+  # 常形参命名规范 for_example
+  - key: readability-identifier-naming.ConstantParameterCase
+    value: lower_case
+  # 常指针形参命名规范 for_example
+  - key: readability-identifier-naming.ConstantPointerParameterCase
+    value: lower_case
+  # 全局指针命名规范 for_example
+  - key: readability-identifier-naming.GlobalPointerCase
+    value: lower_case
+  # 全局变量命名规范 for_example
+  - key: readability-identifier-naming.GlobalVariableCase
+    value: lower_case
+  # 常量表达式函数命名规范 ForExample
+  - key: readability-identifier-naming.ConstexprFunctionCase
+    value: CamelCase
+  # 常量表达式方法命名规范 ForExample
+  - key: readability-identifier-naming.ConstexprMethodCase
+    value: CamelCase
+  # 常量表达式变量命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  # 枚举命名规范 ForExample
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  # 枚举值命名规范 kFOR_EXAMPLE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: k
+  # 宏命名规范 FOR_EXAMPLE
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  # 成员命名规范 for_example_
+  - key: readability-identifier-naming.MemberCase
+    value: lower_case
+  - key: readability-identifier-naming.MemberSuffix
+    value: _
+  # 方法命名规范 ForExample
+  - key: readability-identifier-naming.MethodCase
+    value: CamelCase
+  # 形参命名规范 for_example_
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  # 函数模板形参命名规范 for_example_
+  - key: readability-identifier-naming.ParameterPackCase
+    value: lower_case
+  # 函数形参指针命名规范 for_example_
+  - key: readability-identifier-naming.PointerParameterCase
+    value: lower_case
+  # 私有成员命名规范 for_example_
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+  # 私有方法命名规范 ForExample
+  - key: readability-identifier-naming.PrivateMethodCase
+    value: CamelCase
+  # 保护成员命名规范 for_example_
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: _
+  # 保护方法命名规范 ForExample
+  - key: readability-identifier-naming.ProtectedMethodCase
+    value: CamelCase
+  # 公共成员命名规范 for_example_
+  - key: readability-identifier-naming.PublicMemberCase
+    value: lower_case
+  # 公共方法命名规范 ForExample
+  - key: readability-identifier-naming.PublicMethodCase
+    value: CamelCase
+  # 静态常量命名规范 for_example
+  - key: readability-identifier-naming.StaticConstantCase
+    value: lower_case
+  # 变量命名规范 for_example
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  # 静态变量命名规范 for_example
+  - key: readability-identifier-naming.StaticVariableCase
+    value: lower_case
+  # 模板类型命名规范 ForExample
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  # using别名命名规范 ForExample
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  # typedef别名命名规范 ForExample
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  # 联合体命名规范 ForExample
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  # 虚函数命名规范 ForExample
+  - key: readability-identifier-naming.VirtualMethodCase
+    value: CamelCase
+  # 函数复杂度阈值
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 50

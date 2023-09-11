@@ -100,6 +100,8 @@ gsw -c 分支名 # -c 创建
 gm origin/分支名
 #查看重要的提交记录
 git reflog
+#重命名本地分支
+gb -m old-branch new-branch
 
 ######################################### 提交记录
 # 配合nvim coc-conventional 插件规范提交
