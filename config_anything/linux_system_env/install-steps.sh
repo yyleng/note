@@ -108,3 +108,6 @@ chsh -s /bin/zsh
 ##: 16: change default editor
 vim ~/.zshrc
 export EDITOR=nvim
+
+##: 17: install shell gpt
+pip install shell-gpt

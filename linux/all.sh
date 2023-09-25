@@ -362,3 +362,5 @@ protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/fo
 protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/formats/:. --cpp_out=./build/ common/protocol/messenger.proto
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT ON)
+
+alebraginiap5@email.com----yyxwygz0Bt----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
