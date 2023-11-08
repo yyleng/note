@@ -362,3 +362,10 @@ CTRL-[              Esc
 # CTRL-K                >unknow
 # CTRL-X                >unknow
 # CTRL-N                >unknow
+
+----------------- user manual ------------------
+R -> enter replace mode
+<Insert> -> switch between Insert mode and Replace mode
+~ -> change case of the character under the cursor
+:set <option_name>& -> set <option_name> back to the default
+:options -> open option windows
