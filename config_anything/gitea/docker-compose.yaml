@@ -7,10 +7,10 @@ networks:
 services:
   gitea:
     image: gitea/gitea:1.15.8
-    container_name: gitea
+    container_name: vastpipe_gitea
     environment:
-      - USER_UID=1001
-      - USER_GID=1001
+      - USER_UID=1000
+      - USER_GID=1000
     restart: always
     networks:
       - cicd
