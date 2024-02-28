@@ -306,7 +306,8 @@ WaylandEnable=false
 DefaultSession=gnome-xorg.desktop
 
 #===== kitty ibus chinese input error =====
-GLFW_IM_MODULE=ibus kitty
+sudo vim /usr/share/applications/kitty.desktop
+Exec=env GLFW_IM_MODULE=ibus kitty
 
 #===== kitty fonts config =====
 ~/.local/share/fonts/
@@ -355,6 +356,15 @@ Host 231
     Port 31415
 # usage
 ssh 231
+
+#======== kernel boot ======
+# first BIOS close secure boot
+# then efi
+sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+# then legacy
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+
+
 
 #======== grpc .h .cc ========
 protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/formats/:. --grpc_out=./build/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` common/protocol/messenger.proto
