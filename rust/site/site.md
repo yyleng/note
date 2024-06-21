@@ -5,6 +5,7 @@
 [https://doc.rust-lang.org/rust-by-example/index.html](Rust 代码例子)
 [https://nomicon.purewhite.io/](Rust 死灵书 Book)
 [https://rust-unofficial.github.io/too-many-lists/index.html](Rust 实现链表)
+[https://rustcc.cn/](Rust 中文社区)
 
 ---
 

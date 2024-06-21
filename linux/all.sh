@@ -373,3 +373,17 @@ protoc --proto_path=/opt/vastai/vastpipe/vastpipe/include/mediapipe/framework/fo
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT ON)
 
+---------------
+vaststreamx build requirements: root_3rdparty, llvm_install, vaststream
+vastpipe-plugins build requirements: vaststreamx, vastpipe_pre_build, vaststream
+vastpipe build requirements: root_3rdparty
+---------------
+0. vastpipe windows ci and exe builder
+1. vsx windows ci and exe builder
+2. vsx release 2.4.1 and 提测
+4. vsx ci 支持可选编译 python whl
+
+
+
+----
+1. rcu 锁原理与机制

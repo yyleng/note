@@ -15,19 +15,16 @@
 > 字段描述
 
 ```toml
-[[package]]
-# 依赖名称
-name = "aho-corasick"
-# 依赖版本(toml指定)
-version = "0.7.18"
-# 拉取地址
-source = "registry+https://github.com/rust-lang/crates.io-index"
-# Git SHA256
-checksum = "1e37cfd5e7657ada45f742d6e99ca5788580b5c529dc78faf11ece6dc702656f"
-# 依赖项
-dependencies = [
-"memchr",
-]
+[package]
+name = "world_hello" # 项目名称
+version = "0.1.0" # 项目版本
+edition = "2021" # 项目使用的 Rust 版本
+[dependencies]
+rand = "0.3" # 依赖 rand crate, 版本 0.3, 从 crates.io 下载
+hammer = { version = "0.5.0"} # 依赖 hammer crate, 版本 0.5, 从 crates.io 下载
+color = { git = "https://github.com/bjz/color-rs" } # 依赖 color crate, 从 github 上下载
+geometry = { path = "crates/geometry" } # 依赖 geometry crate, 从本地路径下载
+
 ```
 
 ### 更新依赖
@@ -35,4 +32,15 @@ dependencies = [
 ```sh
 cargo update            # 更新所有依赖
 cargo update -p regex   # 只更新 “regex”
+cargo new <project-name> # 创建一个新的binary项目
+    --lib # 创建一个新的library项目
+    --vcs git # 自动初始化 git 仓库
+cargo build  # 编译项目 debug 版本 (编译快，运行慢)
+    -r # 编译项目 release 版本 (编译慢，运行快)
+cargo run  # 编译并运行项目 debug 版本 (编译快，运行慢)
+    -r # 编译并运行项目 release 版本 (编译慢，运行快)
+cargo check # 检查项目是否能 debug 编译通过，但不生成可执行文件
+    -r # 检查项目是否能 release 编译通过，但不生成可执行文件
+cargo doc [--open]
+cargo test
 ```
