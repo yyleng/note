@@ -324,6 +324,9 @@ rpm -E %fedora
 rpm -qa | grep '*'
 rpm -qa *.rpm
 
+#===== 递归拉取网站目录 =====
+wget -r -np -nH --cut-dirs=1 -R "index.html*" http://example.com/folder/
+
 #===== cmake project jump in lsp ======
 #in main directory cmakelist.txt
 # set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
@@ -378,12 +381,13 @@ vaststreamx build requirements: root_3rdparty, llvm_install, vaststream
 vastpipe-plugins build requirements: vaststreamx, vastpipe_pre_build, vaststream
 vastpipe build requirements: root_3rdparty
 ---------------
-0. vastpipe windows ci and exe builder
-1. vsx windows ci and exe builder
-2. vsx release 2.4.1 and 提测
-4. vsx ci 支持可选编译 python whl
 
+# 8. TODO: vastpipe windows exe latest version
 
-
-----
-1. rcu 锁原理与机制
+显卡+电源: 七彩虹 RTX 4060 8G 战斧 豪华版 + 鑫谷 AN550w 白牌直出
+CPU+主板: 英特尔i5 12490f + 铭宣 H610M 666 WIFI6 D4
+内存: 金百达银爵 8g*2 3200
+硬盘: 金士顿 nv2 m.2 1T
+散热: 利民 AQUA ELITE 240 BLACK ARGB
+机箱: 航嘉 GX720M 逐风黑色
+T: 4400
