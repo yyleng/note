@@ -1,17 +1,7 @@
 #!/bin/sh
-#File Name    : a.sh
-#Author       : aico
-#Mail         : 2237616014@qq.com
-#Github       : https://github.com/TBBtianbaoboy
-#Site         : https://www.lengyangyu520.cn
-#Create Time  : 2021-12-23 23:31:48
-#Description  :
 
 ##: 1: Install Clash
-wget https://github.com/Dreamacro/clash/releases/download/v1.8.0/clash-linux-amd64-v1.8.0.gz
-gunzip clash-linux-amd64-v1.8.0.gz
-chmod +x clash-linux-amd64-v1.8.0
-mv clash-linux-amd64-v1.8.0 /usr/bin/clash
+mv ./clash /usr/bin/clash
 
 ##: 2: Download MonoCloud Config File
 mkdir /etc/clash
